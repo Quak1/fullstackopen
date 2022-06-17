@@ -10,14 +10,22 @@ const Info = ({ text, state, tail = "" }) => (
   </div>
 );
 
+const TableRow = ({ text, state }) => (
+  <tr>
+    <td>{text}</td>
+    <td>{state}</td>
+  </tr>
+);
+
 const Statistics = ({ statistics }) => {
   const { good, neutral, bad } = statistics;
   if (!good && !neutral && !bad) return <div>No feedback given</div>;
 
   const info = [];
   for (let key in statistics)
-    info.push(<Info text={key} state={statistics[key]} />);
-  return info;
+    info.push(<TableRow text={key} state={statistics[key]} />);
+
+  return <table>{info}</table>;
 };
 
 const App = () => {
@@ -29,7 +37,7 @@ const App = () => {
 
   const total = good + neutral + bad;
   const average = (good - bad) / total;
-  const positive = good / total;
+  const positive = ((good / total) * 100).toString() + " %";
 
   const statistics = {
     good,
