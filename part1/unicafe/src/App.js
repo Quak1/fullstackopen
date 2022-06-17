@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
 
-function App() {
+const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
+
+const Title = ({ title }) => <h1>{title}</h1>;
+
+const Info = ({ text, state, tail = "" }) => (
+  <div>
+    {text} {state} {tail}
+  </div>
+);
+
+const App = () => {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+
+  const increaseByOne = (state, setState) => () => setState(state + 1);
+  const total = good + neutral + bad;
+  const average = (good - bad) / total;
+  const positive = good / total;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Title title="give feedback" />
+      <Button onClick={increaseByOne(good, setGood)} text="good" />
+      <Button onClick={increaseByOne(neutral, setNeutral)} text="neutral" />
+      <Button onClick={increaseByOne(bad, setBad)} text="bad" />
+      <Title title="statistics" />
+      <Info text="good" state={good} />
+      <Info text="neutral" state={neutral} />
+      <Info text="bad" state={bad} />
+      <Info text="all" state={total} />
+      <Info text="average" state={average} />
+      <Info text="positive" state={positive} tail=" %" />
+    </>
   );
-}
+};
 
 export default App;
