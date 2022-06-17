@@ -10,6 +10,15 @@ const App = () => {
       name: newName,
     };
 
+    debugger;
+    const nameExists = persons.some(
+      (person) => person.name.toLowerCase() === newName.toLowerCase()
+    );
+    if (nameExists) {
+      alert(`${newName} is already added to phoneboo`);
+      return;
+    }
+
     setNewName("");
     setPersons(persons.concat(newPerson));
   };
