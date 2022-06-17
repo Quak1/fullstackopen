@@ -11,6 +11,9 @@ const Info = ({ text, state, tail = "" }) => (
 );
 
 const Statistics = ({ statistics }) => {
+  const { good, neutral, bad } = statistics;
+  if (!good && !neutral && !bad) return <div>No feedback given</div>;
+
   const info = [];
   for (let key in statistics)
     info.push(<Info text={key} state={statistics[key]} />);
@@ -34,6 +37,7 @@ const App = () => {
     bad,
     total,
     average,
+    positive,
   };
 
   return (
@@ -44,7 +48,6 @@ const App = () => {
       <Button onClick={increaseByOne(bad, setBad)} text="bad" />
       <Title title="statistics" />
       <Statistics statistics={statistics} />
-      <Info text="positive" state={positive} tail=" %" />
     </>
   );
 };
