@@ -1,4 +1,5 @@
 import Languages from "./Languages";
+import Weather from "./Weather";
 
 const Country = ({ country }) => {
   return (
@@ -11,6 +12,7 @@ const Country = ({ country }) => {
       </div>
       <Languages languages={country.languages} />
       <img src={country.flags.png} alt="Flag" />
+      <Weather city={country.capital[0]} />
     </>
   );
 };
