@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import personService from "./services/Persons";
 
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import Notification from "./components/Notification";
+import "./style.css";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [notification, setNotification] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((data) => setPersons(data));
@@ -32,8 +35,13 @@ const App = () => {
         setPersons(persons.concat(data));
         setNewName("");
         setNewNumber("");
+        setNotification(`Addedd ${data.name}`);
+        setTimeout(() => setNotification(null), 5000);
       })
-      .catch((e) => alert(`There was an error: ${e.message}`));
+      .catch(() => {
+        setErrorMessage("Error creating new person");
+        setTimeout(() => setErrorMessage(null), 5000);
+      });
   };
 
   const verifyDuplicate = () => {
@@ -56,11 +64,20 @@ const App = () => {
 
       personService
         .updateNumber(updatedPerson)
-        .then((data) =>
+        .then((data) => {
           setPersons(
             persons.map((person) => (person.id !== data.id ? person : data))
-          )
-        );
+          );
+          setNotification(`${data.name}'s phone number updated`);
+          setTimeout(() => setNotification(null), 5000);
+        })
+        .catch(() => {
+          console.log("error updating");
+          setErrorMessage(
+            `${duplicate.name} might be deleted from server, please refresh`
+          );
+          setTimeout(() => setErrorMessage(null), 5000);
+        });
     }
     return true;
   };
@@ -69,8 +86,18 @@ const App = () => {
     if (window.confirm(`Delete ${person.name}`)) {
       personService
         .deletePerson(person.id)
-        .then((data) => setPersons(persons.filter((p) => person.id !== p.id)))
-        .catch((e) => "Error deleting user");
+        .then(() => {
+          setPersons(persons.filter((p) => person.id !== p.id));
+          setNotification(`${person.name} deleted from server`);
+          setTimeout(() => setNotification(null), 5000);
+        })
+        .catch(() => {
+          setErrorMessage(
+            `Information of ${person.name} has already been removed from server`
+          );
+          setTimeout(() => setErrorMessage(null), 5000);
+          setPersons(persons.filter((p) => p.id !== person.id));
+        });
     }
   };
 
@@ -85,6 +112,9 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <Notification message={errorMessage} type="error" />
+      <Notification message={notification} type="success" />
       <Filter value={filter} onChange={handleFilterChange} />
 
       <h2>add a new</h2>
