@@ -18,18 +18,13 @@ const App = () => {
 
   const addPerson = (e) => {
     e.preventDefault();
+
+    if (verifyDuplicate()) return;
+
     const newPerson = {
       name: newName,
       number: newNumber,
     };
-
-    const nameExists = persons.some(
-      (person) => person.name.toLowerCase() === newName.toLowerCase()
-    );
-    if (nameExists) {
-      alert(`${newName} is already added to phonebook`);
-      return;
-    }
 
     personService
       .create(newPerson)
@@ -39,6 +34,35 @@ const App = () => {
         setNewNumber("");
       })
       .catch((e) => alert(`There was an error: ${e.message}`));
+  };
+
+  const verifyDuplicate = () => {
+    const duplicate = persons.find(
+      (person) => person.name.toLowerCase() === newName.toLowerCase()
+    );
+
+    if (!duplicate) return false;
+
+    const msg =
+      duplicate.name +
+      " is already added to phonebook, " +
+      "replace the old number with a new one?";
+
+    if (window.confirm(msg)) {
+      const updatedPerson = {
+        ...duplicate,
+        number: newNumber,
+      };
+
+      personService
+        .updateNumber(updatedPerson)
+        .then((data) =>
+          setPersons(
+            persons.map((person) => (person.id !== data.id ? person : data))
+          )
+        );
+    }
+    return true;
   };
 
   const deletePerson = (person) => () => {
