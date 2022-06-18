@@ -19,6 +19,8 @@ function App() {
     country.name.common.toLowerCase().includes(filter.toLowerCase())
   );
 
+  const changeFilter = (name) => () => setFilter(name);
+
   return (
     <>
       <div>
@@ -28,7 +30,10 @@ function App() {
         {countries.length === 0 ? (
           "Loading..."
         ) : (
-          <Countries countries={filteredCountries} />
+          <Countries
+            countries={filteredCountries}
+            changeFilter={changeFilter}
+          />
         )}
       </div>
     </>
