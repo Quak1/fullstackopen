@@ -41,6 +41,15 @@ const App = () => {
       .catch((e) => alert(`There was an error: ${e.message}`));
   };
 
+  const deletePerson = (person) => () => {
+    if (window.confirm(`Delete ${person.name}`)) {
+      personService
+        .deletePerson(person.id)
+        .then((data) => setPersons(persons.filter((p) => person.id !== p.id)))
+        .catch((e) => "Error deleting user");
+    }
+  };
+
   const handleNameChange = (e) => setNewName(e.target.value);
   const handleNumberChange = (e) => setNewNumber(e.target.value);
   const handleFilterChange = (e) => setFilter(e.target.value);
@@ -62,7 +71,7 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Persons persons={personsShown} />
+      <Persons persons={personsShown} deletePerson={deletePerson} />
     </div>
   );
 };
