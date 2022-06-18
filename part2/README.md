@@ -9,3 +9,5 @@
 
 ## countries
 - Exercises 2.12 - 2.14 | [Description](https://fullstackopen.com/en/part2/getting_data_from_server#exercises-2-11-2-14)
+  - Weather API: https://www.weatherapi.com
+  - Found in: https://github.com/public-apis/public-apis
