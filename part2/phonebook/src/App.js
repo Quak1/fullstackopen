@@ -22,7 +22,6 @@ const App = () => {
     const newPerson = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1,
     };
 
     const nameExists = persons.some(
@@ -33,9 +32,14 @@ const App = () => {
       return;
     }
 
-    setNewName("");
-    setNewNumber("");
-    setPersons(persons.concat(newPerson));
+    axios
+      .post("http://localhost:3001/persons", newPerson)
+      .then((res) => {
+        setPersons(persons.concat(res.data));
+        setNewName("");
+        setNewNumber("");
+      })
+      .catch((e) => alert(`There was an error: ${e.message}`));
   };
 
   const handleNameChange = (e) => setNewName(e.target.value);
