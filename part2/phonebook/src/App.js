@@ -38,8 +38,8 @@ const App = () => {
         setNotification(`Addedd ${data.name}`);
         setTimeout(() => setNotification(null), 5000);
       })
-      .catch(() => {
-        setErrorMessage("Error creating new person");
+      .catch((e) => {
+        setErrorMessage(e.response.data.error);
         setTimeout(() => setErrorMessage(null), 5000);
       });
   };
