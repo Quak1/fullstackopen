@@ -71,11 +71,8 @@ const App = () => {
           setNotification(`${data.name}'s phone number updated`);
           setTimeout(() => setNotification(null), 5000);
         })
-        .catch(() => {
-          console.log("error updating");
-          setErrorMessage(
-            `${duplicate.name} might be deleted from server, please refresh`
-          );
+        .catch((e) => {
+          setErrorMessage(e.response.data.error);
           setTimeout(() => setErrorMessage(null), 5000);
         });
     }
