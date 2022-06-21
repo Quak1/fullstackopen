@@ -42,9 +42,30 @@ const mostBlogs = (blogs) => {
   };
 };
 
+const mostLikes = (blogs) => {
+  if (blogs.length === 0) return {};
+
+  let likesByAuthor = {};
+  blogs.map((blog) => {
+    const author = blog.author;
+    const count = likesByAuthor[author];
+    likesByAuthor[author] = count ? count + blog.likes : blog.likes;
+  });
+
+  const key = Object.keys(likesByAuthor).reduce((prev, curr) =>
+    likesByAuthor[prev] >= likesByAuthor[curr] ? prev : curr
+  );
+
+  return {
+    author: key,
+    blogs: likesByAuthor[key],
+  };
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
   mostBlogs,
+  mostLikes,
 };
