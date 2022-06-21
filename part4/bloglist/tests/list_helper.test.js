@@ -98,3 +98,26 @@ describe("favorite blog", () => {
     expect(result).toEqual(blogs[2]);
   });
 });
+
+describe("most blogs", () => {
+  test("of empty list is empty object", () => {
+    const result = listHelper.mostBlogs([]);
+    expect(result).toEqual({});
+  });
+
+  test("of one blog is the author of that blog", () => {
+    const result = listHelper.mostBlogs([blogs[0]]);
+    expect(result).toEqual({
+      author: blogs[0].author,
+      blogs: 1,
+    });
+  });
+
+  test("of many blogs is right", () => {
+    const result = listHelper.mostBlogs(blogs);
+    expect(result).toEqual({
+      author: "Robert C. Martin",
+      blogs: 3,
+    });
+  });
+});
