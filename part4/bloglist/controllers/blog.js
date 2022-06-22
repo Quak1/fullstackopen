@@ -29,10 +29,22 @@ blogRouter.post("/", async (request, response) => {
 });
 
 blogRouter.delete("/:id", async (request, response) => {
-  const id = request.params.id;
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: "token missing or invalid" });
+  }
+  const userid = decodedToken.id;
+  const blogid = request.params.id;
 
-  await Blog.findByIdAndDelete(id);
-  response.status(204).end();
+  const blog = await Blog.findById(blogid);
+  if (!blog) {
+    response.status(204).end();
+  } else if (blog.user.toString() === userid) {
+    await Blog.findByIdAndDelete(blogid);
+    response.status(204).end();
+  } else {
+    response.status(401).end();
+  }
 });
 
 blogRouter.put("/:id", async (request, response) => {
