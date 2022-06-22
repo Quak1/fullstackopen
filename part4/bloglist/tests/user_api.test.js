@@ -11,6 +11,7 @@ beforeEach(async () => {
   const singleUser = new User({
     username: "test",
     name: "Test Man",
+    // TODO fix user creation, passwordHash
     password: "SuperPassword",
   });
   await singleUser.save();
