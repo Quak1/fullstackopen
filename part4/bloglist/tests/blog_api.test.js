@@ -77,6 +77,25 @@ test("if title or url are missing, receive status code 400", async () => {
   expect(res.status).toEqual(400);
 });
 
+test.only("successful deletion with valid id", async () => {
+  const blogsAtStart = await helper.blogsInDb();
+  const blogToDelete = blogsAtStart[0];
+
+  const res = await api.delete(`/api/blogs/${blogToDelete.id}`);
+  expect(res.status).toBe(204);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1);
+
+  const titles = blogsAtEnd.map((b) => b.title);
+  expect(titles).not.toContain(blogToDelete.title);
+});
+
+test.only("fails with status code 404 if id is invalid", async () => {
+  const res = await api.delete("/api/blogs/123");
+  expect(res.status).toBe(400);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
