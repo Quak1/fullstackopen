@@ -34,8 +34,26 @@ test("the unique identifier property is named id", async () => {
   const res = await api.get("/api/blogs");
   const id = res.body[0].id;
 
-  console.log(res.body[0]);
   expect(id).toBeDefined();
+});
+
+test("a blog can be added", async () => {
+  const newEntry = {
+    title: "POST test",
+    author: "Test",
+    url: "https://example.com",
+    likes: 10,
+  };
+
+  const res = await api.post("/api/blogs").send(newEntry);
+  expect(res.headers["content-type"]).toMatch(/json/);
+  expect(res.status).toEqual(201);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+
+  const blogs = blogsAtEnd.map((b) => b.title);
+  expect(blogs).toContain("POST test");
 });
 
 afterAll(() => {
