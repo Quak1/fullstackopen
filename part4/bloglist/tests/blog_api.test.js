@@ -30,6 +30,14 @@ test("a given title is returned", async () => {
   expect(blogs).toContain("React patterns");
 });
 
+test("the unique identifier property is named id", async () => {
+  const res = await api.get("/api/blogs");
+  const id = res.body[0].id;
+
+  console.log(res.body[0]);
+  expect(id).toBeDefined();
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
