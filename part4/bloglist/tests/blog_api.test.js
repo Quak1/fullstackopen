@@ -77,7 +77,7 @@ test("if title or url are missing, receive status code 400", async () => {
   expect(res.status).toEqual(400);
 });
 
-test.only("successful deletion with valid id", async () => {
+test("successful deletion with valid id", async () => {
   const blogsAtStart = await helper.blogsInDb();
   const blogToDelete = blogsAtStart[0];
 
@@ -91,8 +91,38 @@ test.only("successful deletion with valid id", async () => {
   expect(titles).not.toContain(blogToDelete.title);
 });
 
-test.only("fails with status code 404 if id is invalid", async () => {
+test("fails with status code 404 if id is invalid", async () => {
   const res = await api.delete("/api/blogs/123");
+  expect(res.status).toBe(400);
+});
+
+test.only("succeeds with valid data", async () => {
+  const blogsAtStart = await helper.blogsInDb();
+  const blogToUpdate = blogsAtStart[0];
+  const updateObject = {
+    likes: blogToUpdate.likes + 1,
+  };
+
+  const res = await api.put(`/api/blogs/${blogToUpdate.id}`).send(updateObject);
+  expect(res.status).toBe(200);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd[0].likes).toBe(updateObject.likes);
+});
+
+test.only("fails with status code 404 if data is invalid", async () => {
+  const blogsAtStart = await helper.blogsInDb();
+  const blogToUpdate = blogsAtStart[0];
+  const updateObject = {
+    likes: "five",
+  };
+
+  const res = await api.put(`/api/blogs/${blogToUpdate.id}`).send(updateObject);
+  expect(res.status).toBe(400);
+});
+
+test.only("fails with status code 404 if id is invalid", async () => {
+  const res = await api.put("/api/blogs/123").send({});
   expect(res.status).toBe(400);
 });
 
