@@ -64,9 +64,17 @@ test("if likes is missing, it defaults to 0", async () => {
   };
 
   const res = await api.post("/api/blogs").send(newEntry);
-
-  console.log(res.body);
   expect(res.body.likes).toBe(0);
+});
+
+test("if title or url are missing, receive status code 400", async () => {
+  const newEntry = {
+    author: "Test",
+    likes: 10,
+  };
+
+  const res = await api.post("/api/blogs").send(newEntry);
+  expect(res.status).toEqual(400);
 });
 
 afterAll(() => {
