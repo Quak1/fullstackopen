@@ -13,10 +13,19 @@ const App = () => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem("loggedUser");
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+    }
+  }, []);
+
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
       const user = await loginService.login({ username, password });
+      window.localStorage.setItem("loggedUser", JSON.stringify(user));
       setUser(user);
       setUsername("");
       setPassword("");
@@ -26,6 +35,7 @@ const App = () => {
   };
 
   const handleLogout = () => {
+    window.localStorage.removeItem("loggedUser");
     setUser(null);
   };
 
@@ -45,7 +55,7 @@ const App = () => {
         <div>
           password{" "}
           <input
-            type="text"
+            type="password"
             value={password}
             name="Password"
             onChange={({ target }) => setPassword(target.value)}
