@@ -8,6 +8,9 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [url, setUrl] = useState("");
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -26,6 +29,7 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password });
       window.localStorage.setItem("loggedUser", JSON.stringify(user));
+      blogService.setToken(user.token);
       setUser(user);
       setUsername("");
       setPassword("");
@@ -39,37 +43,42 @@ const App = () => {
     setUser(null);
   };
 
+  const handleNewBlog = async (event) => {
+    event.preventDefault();
+    const newBlog = { title, author, url };
+    const createdBlog = await blogService.create(newBlog);
+    setBlogs(blogs.concat(createdBlog));
+    setTitle("");
+    setAuthor("");
+    setUrl("");
+  };
+
   const loginForm = () => (
-    <>
-      <h2>Log in to application</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          username{" "}
-          <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          password{" "}
-          <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form>
-    </>
+    <form onSubmit={handleLogin}>
+      <div>
+        username{" "}
+        <input
+          type="text"
+          value={username}
+          name="Username"
+          onChange={({ target }) => setUsername(target.value)}
+        />
+      </div>
+      <div>
+        password{" "}
+        <input
+          type="password"
+          value={password}
+          name="Password"
+          onChange={({ target }) => setPassword(target.value)}
+        />
+      </div>
+      <button type="submit">login</button>
+    </form>
   );
 
   const blogList = () => (
     <div>
-      <h2>blogs</h2>
-      <p>{user.name} logged in</p>
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
@@ -77,7 +86,54 @@ const App = () => {
     </div>
   );
 
-  return user === null ? loginForm() : blogList();
+  const newBlog = () => (
+    <form onSubmit={handleNewBlog}>
+      <div>
+        Title{" "}
+        <input
+          type="text"
+          value={title}
+          name="Title"
+          onChange={({ target }) => setTitle(target.value)}
+        />
+      </div>
+      <div>
+        Author{" "}
+        <input
+          type="text"
+          value={author}
+          name="Author"
+          onChange={({ target }) => setAuthor(target.value)}
+        />
+      </div>
+      <div>
+        url{" "}
+        <input
+          type="text"
+          value={url}
+          name="Url"
+          onChange={({ target }) => setUrl(target.value)}
+        />
+      </div>
+      <button type="submit">create</button>
+    </form>
+  );
+
+  const loggedView = () => (
+    <>
+      <p>{user.name} logged in</p>
+      <h2>create new</h2>
+      {newBlog()}
+      {blogList()}
+    </>
+  );
+
+  return (
+    <>
+      <h2>{user === null ? "log in to application" : "blogs"}</h2>
+      {user === null ? loginForm() : loggedView()}
+    </>
+  );
 };
 
 export default App;
