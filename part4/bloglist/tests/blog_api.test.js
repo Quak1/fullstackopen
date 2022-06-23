@@ -1,14 +1,39 @@
 const mongoose = require("mongoose");
 const supertest = require("supertest");
+const jwt = require("jsonwebtoken");
 
 const helper = require("./test_helper");
 const Blog = require("../models/blog");
+const User = require("../models/user");
 const app = require("../app");
 const api = supertest(app);
 
+let users, posterToken, otherToken;
+beforeAll(async () => {
+  await User.deleteMany({});
+  users = await User.insertMany(helper.sampleUsers);
+
+  const poster = {
+    username: users[0].username,
+    id: users[0].id,
+  };
+  const other = {
+    username: users[1].username,
+    id: users[1].id,
+  };
+
+  posterToken = "Bearer " + jwt.sign(poster, process.env.SECRET);
+  otherToken = "Bearer " + jwt.sign(other, process.env.SECRET);
+});
+
 beforeEach(async () => {
   await Blog.deleteMany({});
-  await Blog.insertMany(helper.initialBlogs);
+
+  const initialBlogs = helper.initialBlogs.map((blog) => ({
+    ...blog,
+    user: users[0]._id,
+  }));
+  await Blog.insertMany(initialBlogs);
 });
 
 describe("view all blogs", () => {
@@ -48,7 +73,10 @@ describe("addition of a new entry", () => {
       likes: 10,
     };
 
-    const res = await api.post("/api/blogs").send(newEntry);
+    const res = await api
+      .post("/api/blogs")
+      .set("Authorization", posterToken)
+      .send(newEntry);
     expect(res.headers["content-type"]).toMatch(/json/);
     expect(res.status).toEqual(201);
 
@@ -66,7 +94,10 @@ describe("addition of a new entry", () => {
       url: "https://example.com",
     };
 
-    const res = await api.post("/api/blogs").send(newEntry);
+    const res = await api
+      .post("/api/blogs")
+      .set("Authorization", posterToken)
+      .send(newEntry);
     expect(res.body.likes).toBe(0);
   });
 
@@ -76,8 +107,26 @@ describe("addition of a new entry", () => {
       likes: 10,
     };
 
-    const res = await api.post("/api/blogs").send(newEntry);
+    const res = await api
+      .post("/api/blogs")
+      .set("Authorization", posterToken)
+      .send(newEntry);
     expect(res.status).toEqual(400);
+  });
+
+  test("blog is not added if authorization header is missing", async () => {
+    const newEntry = {
+      title: "POST test",
+      author: "Test",
+      url: "https://example.com",
+      likes: 10,
+    };
+
+    const res = await api.post("/api/blogs").send(newEntry);
+    expect(res.status).toEqual(401);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
   });
 });
 
@@ -86,7 +135,9 @@ describe("deletetion of a note", () => {
     const blogsAtStart = await helper.blogsInDb();
     const blogToDelete = blogsAtStart[0];
 
-    const res = await api.delete(`/api/blogs/${blogToDelete.id}`);
+    const res = await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set("Authorization", posterToken);
     expect(res.status).toBe(204);
 
     const blogsAtEnd = await helper.blogsInDb();
@@ -97,8 +148,23 @@ describe("deletetion of a note", () => {
   });
 
   test("fails with status code 404 if id is invalid", async () => {
-    const res = await api.delete("/api/blogs/123");
+    const res = await api
+      .delete("/api/blogs/123")
+      .set("Authorization", posterToken);
     expect(res.status).toBe(400);
+  });
+
+  test("rejected if done by another other", async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToDelete = blogsAtStart[0];
+
+    const res = await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set("Authorization", otherToken);
+    expect(res.status).toBe(401);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length);
   });
 });
 
@@ -112,6 +178,7 @@ describe("update an existing note", () => {
 
     const res = await api
       .put(`/api/blogs/${blogToUpdate.id}`)
+      .set("Authorization", posterToken)
       .send(updateObject);
     expect(res.status).toBe(200);
 
@@ -128,13 +195,34 @@ describe("update an existing note", () => {
 
     const res = await api
       .put(`/api/blogs/${blogToUpdate.id}`)
+      .set("Authorization", posterToken)
       .send(updateObject);
     expect(res.status).toBe(400);
   });
 
   test("fails with status code 404 if id is invalid", async () => {
-    const res = await api.put("/api/blogs/123").send({});
+    const res = await api
+      .put("/api/blogs/123")
+      .send({})
+      .set("Authorization", posterToken);
     expect(res.status).toBe(400);
+  });
+
+  test("rejected if done by another user", async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToUpdate = blogsAtStart[0];
+    const updateObject = {
+      likes: blogToUpdate.likes + 1,
+    };
+
+    const res = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .set("Authorization", otherToken)
+      .send(updateObject);
+    expect(res.status).toBe(401);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd[0].likes).toBe(blogsAtStart[0].likes);
   });
 });
 

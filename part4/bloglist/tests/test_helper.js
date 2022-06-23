@@ -1,4 +1,7 @@
+const bcrypt = require("bcrypt");
+
 const Blog = require("../models/blog");
+const User = require("../models/user");
 
 const initialBlogs = [
   {
@@ -50,7 +53,21 @@ const blogsInDb = async () => {
   return blogs.map((blog) => blog.toJSON());
 };
 
+const sampleUsers = [
+  {
+    username: "test",
+    name: "Test Tester",
+    passwordHash: "tester",
+  },
+  {
+    username: "test 2",
+    name: "Tester Two",
+    passwordHash: "two",
+  },
+];
+
 module.exports = {
   initialBlogs,
   blogsInDb,
+  sampleUsers,
 };
