@@ -8,13 +8,19 @@ const api = supertest(app);
 
 beforeEach(async () => {
   await User.deleteMany({});
-  const singleUser = new User({
-    username: "test",
-    name: "Test Man",
-    // TODO fix user creation, passwordHash
-    password: "SuperPassword",
-  });
-  await singleUser.save();
+  await User.insertMany(helper.sampleUsers);
+});
+
+test("view all users", async () => {
+  const res = await api.get("/api/users");
+
+  expect(res.status).toBe(200);
+  expect(res.headers["content-type"]).toMatch(/json/);
+  expect(res.body).toHaveLength(2);
+
+  const usernames = res.body.map((u) => u.username);
+  expect(usernames).toContain("test");
+  expect(usernames).toContain("test 2");
 });
 
 describe("user creation", () => {
