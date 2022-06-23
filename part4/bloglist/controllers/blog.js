@@ -41,12 +41,18 @@ blogRouter.delete("/:id", userExtractor, async (request, response) => {
   }
 });
 
-blogRouter.put("/:id", async (request, response) => {
-  const id = request.params.id;
+blogRouter.put("/:id", userExtractor, async (request, response) => {
+  const { user } = request;
+  const blogid = request.params.id;
   const body = request.body;
 
-  const res = await Blog.findByIdAndUpdate(id, body, { new: true });
-  response.status(200).json(res);
+  const blog = await Blog.findById(blogid);
+  if (blog.user.toString() === user.id) {
+    const res = await Blog.findByIdAndUpdate(blogid, body, { new: true });
+    response.status(200).json(res);
+  } else {
+    response.status(401).end();
+  }
 });
 
 module.exports = blogRouter;
