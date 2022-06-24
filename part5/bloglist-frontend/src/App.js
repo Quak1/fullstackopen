@@ -3,6 +3,8 @@ import Blog from "./components/Blog";
 import Notification from "./components/Notification";
 import Toggleable from "./components/Toggleable";
 import BlogForm from "./components/BlogForm";
+import LoginForm from "./components/LoginForm";
+
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
@@ -15,8 +17,6 @@ const timedMessage = (message, setter, time = 5000) => {
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [notification, setNotification] = useState(null);
@@ -34,25 +34,22 @@ const App = () => {
     }
   }, []);
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    try {
-      const user = await loginService.login({ username, password });
-      window.localStorage.setItem("loggedUser", JSON.stringify(user));
-
-      setUser(user);
-      setUsername("");
-      setPassword("");
-      timedMessage("You have logged in!", setNotification);
-    } catch (exception) {
-      timedMessage("Wrong username or password", setErrorMessage);
-    }
-  };
-
   const handleLogout = () => {
     window.localStorage.removeItem("loggedUser");
     setUser(null);
     timedMessage("You have logged out!", setNotification);
+  };
+
+  const sendCredentials = async (credentials) => {
+    try {
+      const user = await loginService.login(credentials);
+      window.localStorage.setItem("loggedUser", JSON.stringify(user));
+      setUser(user);
+      timedMessage("You have logged in!", setNotification);
+      return true;
+    } catch (exception) {
+      timedMessage("Wrong username or password", setErrorMessage);
+    }
   };
 
   const createBlog = async (newBlog) => {
@@ -71,30 +68,6 @@ const App = () => {
     }
   };
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username{" "}
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password{" "}
-        <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
-  );
-
   const blogList = () => (
     <div>
       {blogs.map((blog) => (
@@ -106,6 +79,7 @@ const App = () => {
 
   const loggedView = () => (
     <>
+      <h2>Blogs</h2>
       <p>{user.name} logged in</p>
       <Toggleable buttonLabel="new blog" ref={newBlogFormRef}>
         <BlogForm createBlog={createBlog} />
@@ -116,10 +90,13 @@ const App = () => {
 
   return (
     <>
-      <h2>{user === null ? "log in to application" : "blogs"}</h2>
       <Notification message={errorMessage} />
       <Notification message={notification} type="notification" />
-      {user === null ? loginForm() : loggedView()}
+      {user === null ? (
+        <LoginForm sendCredentials={sendCredentials} />
+      ) : (
+        loggedView()
+      )}
     </>
   );
 };
