@@ -1,7 +1,15 @@
 import { useState, useEffect } from "react";
 import Blog from "./components/Blog";
+import Notification from "./components/Notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+
+const timedMessage = (message, setter, time = 5000) => {
+  setter(message);
+  setTimeout(() => {
+    setter(null);
+  }, time);
+};
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -11,6 +19,8 @@ const App = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -29,28 +39,40 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password });
       window.localStorage.setItem("loggedUser", JSON.stringify(user));
-      blogService.setToken(user.token);
+
       setUser(user);
       setUsername("");
       setPassword("");
+      timedMessage("You have logged in!", setNotification);
     } catch (exception) {
-      console.log(exception);
+      timedMessage("Wrong username or password", setErrorMessage);
     }
   };
 
   const handleLogout = () => {
     window.localStorage.removeItem("loggedUser");
     setUser(null);
+    timedMessage("You have logged out!", setNotification);
   };
 
   const handleNewBlog = async (event) => {
     event.preventDefault();
-    const newBlog = { title, author, url };
-    const createdBlog = await blogService.create(newBlog);
-    setBlogs(blogs.concat(createdBlog));
-    setTitle("");
-    setAuthor("");
-    setUrl("");
+
+    try {
+      const newBlog = { title, author, url };
+      const createdBlog = await blogService.create(newBlog);
+
+      setBlogs(blogs.concat(createdBlog));
+      setTitle("");
+      setAuthor("");
+      setUrl("");
+      timedMessage(
+        `A new blog ${newBlog.title} by ${newBlog.author} has been added`,
+        setNotification
+      );
+    } catch (exception) {
+      timedMessage("Please fill all the required(*) fields", setErrorMessage);
+    }
   };
 
   const loginForm = () => (
@@ -89,7 +111,7 @@ const App = () => {
   const newBlog = () => (
     <form onSubmit={handleNewBlog}>
       <div>
-        Title{" "}
+        Title*{" "}
         <input
           type="text"
           value={title}
@@ -98,7 +120,7 @@ const App = () => {
         />
       </div>
       <div>
-        Author{" "}
+        Author*{" "}
         <input
           type="text"
           value={author}
@@ -131,6 +153,8 @@ const App = () => {
   return (
     <>
       <h2>{user === null ? "log in to application" : "blogs"}</h2>
+      <Notification message={errorMessage} />
+      <Notification message={notification} type="notification" />
       {user === null ? loginForm() : loggedView()}
     </>
   );
