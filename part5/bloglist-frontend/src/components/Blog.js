@@ -1,7 +1,8 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 
 const Blog = ({ blog, likeBlog, removeBlog }) => {
-  const [showDetails, setShowDetails] = useState(true);
+  const [showDetails, setShowDetails] = useState(false);
   let username = JSON.parse(window.localStorage.getItem("loggedUser")).username;
 
   const handleLike = () => {
@@ -43,6 +44,12 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
       <button onClick={() => setShowDetails(true)}>view</button>
     </div>
   );
+};
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  likeBlog: PropTypes.func.isRequired,
+  removeBlog: PropTypes.func.isRequired,
 };
 
 export default Blog;
