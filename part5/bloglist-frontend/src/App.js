@@ -68,10 +68,28 @@ const App = () => {
     }
   };
 
+  const likeBlog = async (updateBlog, blogId) => {
+    try {
+      const res = await blogService.update(updateBlog, blogId);
+      const updatedBlogs = blogs.map((b) => {
+        if (b.id === blogId)
+          return {
+            ...b,
+            likes: res.likes,
+          };
+        return b;
+      });
+      setBlogs(updatedBlogs);
+      timedMessage("You liked a post!", setNotification);
+    } catch (exception) {
+      timedMessage("An error ocurred liking that post", setErrorMessage);
+    }
+  };
+
   const blogList = () => (
     <div>
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} likeBlog={likeBlog} />
       ))}
       <button onClick={handleLogout}>logout</button>
     </div>

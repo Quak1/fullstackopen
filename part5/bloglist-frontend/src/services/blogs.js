@@ -3,6 +3,13 @@ const baseUrl = "/api/blogs";
 
 let token = null;
 
+const authHeader = () => {
+  const token = JSON.parse(window.localStorage.getItem("loggedUser")).token;
+  return {
+    headers: { Authorization: `bearer ${token}` },
+  };
+};
+
 const setToken = (newToken) => {
   token = `bearer ${newToken}`;
 };
@@ -22,5 +29,10 @@ const create = async (newBlog) => {
   return res.data;
 };
 
-export default { getAll, setToken, create };
+const update = async (updatedBlog, blogId) => {
+  const config = authHeader();
+  const res = await axios.put(`${baseUrl}/${blogId}`, updatedBlog, config);
+  return res.data;
+};
 
+export default { getAll, setToken, create, update };
