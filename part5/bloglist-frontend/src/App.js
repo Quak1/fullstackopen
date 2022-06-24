@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
 import Toggleable from "./components/Toggleable";
@@ -22,6 +22,7 @@ const App = () => {
   const [url, setUrl] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
   const [notification, setNotification] = useState(null);
+  const blogFormRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -71,6 +72,7 @@ const App = () => {
         `A new blog ${newBlog.title} by ${newBlog.author} has been added`,
         setNotification
       );
+      blogFormRef.current.toggleVisibility();
     } catch (exception) {
       timedMessage("Please fill all the required(*) fields", setErrorMessage);
     }
@@ -110,7 +112,7 @@ const App = () => {
   );
 
   const newBlog = () => (
-    <Toggleable buttonLabel="new blog">
+    <Toggleable buttonLabel="new blog" ref={blogFormRef}>
       <form onSubmit={handleNewBlog}>
         <div>
           Title*{" "}
