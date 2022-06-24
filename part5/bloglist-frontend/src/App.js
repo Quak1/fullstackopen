@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
 import Toggleable from "./components/Toggleable";
+import BlogForm from "./components/BlogForm";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
@@ -17,12 +18,9 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
   const [notification, setNotification] = useState(null);
-  const blogFormRef = useRef();
+  const newBlogFormRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -57,22 +55,17 @@ const App = () => {
     timedMessage("You have logged out!", setNotification);
   };
 
-  const handleNewBlog = async (event) => {
-    event.preventDefault();
-
+  const createBlog = async (newBlog) => {
     try {
-      const newBlog = { title, author, url };
       const createdBlog = await blogService.create(newBlog);
-
       setBlogs(blogs.concat(createdBlog));
-      setTitle("");
-      setAuthor("");
-      setUrl("");
+
       timedMessage(
         `A new blog ${newBlog.title} by ${newBlog.author} has been added`,
         setNotification
       );
-      blogFormRef.current.toggleVisibility();
+      newBlogFormRef.current.toggleVisibility();
+      return true;
     } catch (exception) {
       timedMessage("Please fill all the required(*) fields", setErrorMessage);
     }
@@ -111,46 +104,12 @@ const App = () => {
     </div>
   );
 
-  const newBlog = () => (
-    <Toggleable buttonLabel="new blog" ref={blogFormRef}>
-      <form onSubmit={handleNewBlog}>
-        <div>
-          Title*{" "}
-          <input
-            type="text"
-            value={title}
-            name="Title"
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          Author*{" "}
-          <input
-            type="text"
-            value={author}
-            name="Author"
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url{" "}
-          <input
-            type="text"
-            value={url}
-            name="Url"
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-        <button type="submit">create</button>
-      </form>
-    </Toggleable>
-  );
-
   const loggedView = () => (
     <>
       <p>{user.name} logged in</p>
-      <h2>create new</h2>
-      {newBlog()}
+      <Toggleable buttonLabel="new blog" ref={newBlogFormRef}>
+        <BlogForm createBlog={createBlog} />
+      </Toggleable>
       {blogList()}
     </>
   );
