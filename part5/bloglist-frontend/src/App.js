@@ -93,14 +93,29 @@ const App = () => {
       setBlogs(updatedBlogs);
       timedMessage("You liked a post!", setNotification);
     } catch (exception) {
-      timedMessage("An error ocurred liking that post", setErrorMessage);
+      timedMessage("An error occurred liking that post", setErrorMessage);
+    }
+  };
+
+  const removeBlog = async (blogId) => {
+    try {
+      await blogService.remove(blogId);
+      setBlogs(blogs.filter((b) => b.id !== blogId));
+      timedMessage("You removed a post!", setNotification);
+    } catch (exception) {
+      timedMessage("An error occurred deleted this post", setErrorMessage);
     }
   };
 
   const blogList = () => (
     <div>
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} likeBlog={likeBlog} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          likeBlog={likeBlog}
+          removeBlog={removeBlog}
+        />
       ))}
       <button onClick={handleLogout}>logout</button>
     </div>

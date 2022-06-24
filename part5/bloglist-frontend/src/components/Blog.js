@@ -1,7 +1,8 @@
 import { useState } from "react";
 
-const Blog = ({ blog, likeBlog }) => {
-  const [showDetails, setShowDetails] = useState(false);
+const Blog = ({ blog, likeBlog, removeBlog }) => {
+  const [showDetails, setShowDetails] = useState(true);
+  let username = JSON.parse(window.localStorage.getItem("loggedUser")).username;
 
   const handleLike = () => {
     const updatedBlog = {
@@ -9,6 +10,12 @@ const Blog = ({ blog, likeBlog }) => {
     };
 
     likeBlog(updatedBlog, blog.id);
+  };
+
+  const handleRemove = () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      removeBlog(blog.id);
+    }
   };
 
   if (showDetails) {
@@ -23,6 +30,9 @@ const Blog = ({ blog, likeBlog }) => {
           likes: {blog.likes} <button onClick={handleLike}>like</button>
         </div>
         <div>{blog.user.name}</div>
+        {username === blog.user.username ? (
+          <button onClick={handleRemove}>remove</button>
+        ) : null}
       </div>
     );
   }
