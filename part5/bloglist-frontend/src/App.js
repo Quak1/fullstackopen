@@ -23,7 +23,10 @@ const App = () => {
   const newBlogFormRef = useRef();
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService
+      .getAll()
+      .then((blogs) => sortByLikes(blogs))
+      .then((blogs) => setBlogs(blogs));
   }, []);
 
   useEffect(() => {
@@ -33,6 +36,13 @@ const App = () => {
       setUser(user);
     }
   }, []);
+
+  const sortByLikes = (blogs) =>
+    blogs.sort((a, b) => {
+      if (a.likes > b.likes) return -1;
+      else if (a.likes < b.likes) return 1;
+      else return 0;
+    });
 
   const handleLogout = () => {
     window.localStorage.removeItem("loggedUser");
@@ -79,6 +89,7 @@ const App = () => {
           };
         return b;
       });
+      // setBlogs(sortByLikes(updatedBlogs));
       setBlogs(updatedBlogs);
       timedMessage("You liked a post!", setNotification);
     } catch (exception) {
