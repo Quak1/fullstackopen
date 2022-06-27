@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 const Blog = ({ blog, likeBlog, removeBlog }) => {
   const [showDetails, setShowDetails] = useState(false);
-  let username = JSON.parse(window.localStorage.getItem("loggedUser")).username;
+  let username = JSON.parse(localStorage.getItem("loggedUser")).username;
 
   const handleLike = () => {
     const updatedBlog = {
@@ -39,7 +39,7 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
   }
 
   return (
-    <div>
+    <div className="blogOutline">
       {blog.title} by {blog.author}
       <button onClick={() => setShowDetails(true)}>view</button>
     </div>
@@ -53,4 +53,3 @@ Blog.propTypes = {
 };
 
 export default Blog;
-

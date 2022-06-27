@@ -1,8 +1,6 @@
 import axios from "axios";
 const baseUrl = "/api/blogs";
 
-let token = null;
-
 const authHeader = () => {
   const token = JSON.parse(window.localStorage.getItem("loggedUser")).token;
   return {
@@ -11,7 +9,7 @@ const authHeader = () => {
 };
 
 const setToken = (newToken) => {
-  token = `bearer ${newToken}`;
+  return `bearer ${newToken}`;
 };
 
 const getAll = async () => {
