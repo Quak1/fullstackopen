@@ -37,4 +37,25 @@ describe("Blog app", function () {
       );
     });
   });
+
+  describe("When logged in", function () {
+    beforeEach(function () {
+      cy.login("myUser", "password");
+    });
+
+    it.only("A blog can be created", function () {
+      cy.contains("new blog").click();
+      cy.get('[placeholder="title"]').type("A New Blog");
+      cy.get('[placeholder="author"]').type("Blogger");
+      cy.get('[placeholder="url"]').type("https://example.com");
+      cy.contains("create").click();
+
+      cy.contains("view");
+      cy.contains("A new blog A New Blog by Blogger has been added").should(
+        "have.css",
+        "color",
+        "rgb(0, 128, 0)"
+      );
+    });
+  });
 });
