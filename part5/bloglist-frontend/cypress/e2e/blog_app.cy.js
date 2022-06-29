@@ -103,7 +103,7 @@ describe("Blog app", function () {
         cy.get(".blogDetails").should("not.contain", "remove");
       });
 
-      it.only("Blogs are ordered by likes", function () {
+      it("Blogs are ordered by likes", function () {
         cy.contains("hide").click();
         cy.get(".blogOutline").eq(0).contains("Existing Blog");
         cy.get(".blogOutline").eq(1).contains("Another Blog");
