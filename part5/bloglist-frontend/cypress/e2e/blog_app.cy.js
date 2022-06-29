@@ -43,7 +43,7 @@ describe("Blog app", function () {
       cy.login("myUser", "password");
     });
 
-    it.only("A blog can be created", function () {
+    it("A blog can be created", function () {
       cy.contains("new blog").click();
       cy.get('[placeholder="title"]').type("A New Blog");
       cy.get('[placeholder="author"]').type("Blogger");
@@ -52,6 +52,33 @@ describe("Blog app", function () {
 
       cy.contains("view");
       cy.contains("A new blog A New Blog by Blogger has been added").should(
+        "have.css",
+        "color",
+        "rgb(0, 128, 0)"
+      );
+    });
+  });
+
+  describe.only("With existing blog", function () {
+    beforeEach(function () {
+      cy.login("myUser", "password");
+      cy.createBlog(
+        "Existing Blog",
+        "Existing Author",
+        "htttps://existing.com"
+      );
+      cy.createBlog(
+        "Another Existing Blog",
+        "Existing Author",
+        "htttps://existing.com"
+      );
+    });
+
+    it.only("A blog can be liked", function () {
+      cy.contains("Existing Blog").contains("view").click();
+      cy.contains("like").click();
+      cy.contains("likes: 1");
+      cy.contains("You liked a post!").should(
         "have.css",
         "color",
         "rgb(0, 128, 0)"
