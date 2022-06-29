@@ -58,7 +58,7 @@ describe("Blog app", function () {
       );
     });
 
-    describe.only("With existing blog", function () {
+    describe("With existing blog", function () {
       beforeEach(function () {
         cy.createBlog(
           "Existing Blog",
@@ -66,14 +66,15 @@ describe("Blog app", function () {
           "htttps://existing.com"
         );
         cy.createBlog(
-          "Another Existing Blog",
+          "Another Blog",
           "Existing Author",
           "htttps://existing.com"
         );
+        cy.contains("Existing Blog").contains("view").click();
       });
 
-      it.only("A blog can be liked", function () {
-        cy.contains("Existing Blog").contains("view").click();
+      it("A blog can be liked", function () {
+        cy.contains("likes: 0");
         cy.contains("like").click();
         cy.contains("likes: 1");
         cy.contains("You liked a post!").should(
@@ -81,6 +82,25 @@ describe("Blog app", function () {
           "color",
           "rgb(0, 128, 0)"
         );
+      });
+
+      it("A blog can be deleted", function () {
+        cy.contains("remove").click();
+        cy.get("html").should("not.contain", "Existing Blog");
+        cy.contains("You removed a post!").should(
+          "have.css",
+          "color",
+          "rgb(0, 128, 0)"
+        );
+      });
+
+      it("A different user cannot delete a blog", function () {
+        cy.createUser("Another Name", "anotherUser", "password");
+        cy.logout();
+        cy.login("anotherUser", "password");
+
+        cy.contains("view").click();
+        cy.get(".blogDetails").should("not.contain", "remove");
       });
     });
   });
