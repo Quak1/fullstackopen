@@ -1,6 +1,6 @@
 import deepFreeze from "deep-freeze";
 import anecdoteReducer from "./anecdoteReducer";
-import { voteAnecdote } from "./anecdoteReducer";
+import { voteAnecdote, addAnecdote } from "./anecdoteReducer";
 
 const getId = () => (100000 * Math.random()).toFixed(0);
 
@@ -24,5 +24,16 @@ describe("unicafe reducer", () => {
       id,
       votes: 1,
     });
+  });
+
+  test("can create an anecdote", () => {
+    const action = addAnecdote("New anecdote");
+
+    const state = initialState;
+    deepFreeze(state);
+
+    const newState = anecdoteReducer(state, action);
+    expect(newState).toHaveLength(4);
+    expect(newState[3].content).toBe("New anecdote");
   });
 });
