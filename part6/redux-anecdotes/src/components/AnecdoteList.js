@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { voteAnecdote } from "../reducers/anecdoteReducer";
+import { changeNotification } from "../reducers/notificationReducer";
 
 const AnecdoteList = () => {
   const anecdotes = useSelector((state) => state.anecdotes);
@@ -8,6 +9,7 @@ const AnecdoteList = () => {
   const vote = (id) => {
     console.log("vote", id);
     dispatch(voteAnecdote(id));
+    dispatch(changeNotification(`Vote for #${id}`));
   };
 
   const anecdotesByVotes = [...anecdotes].sort((a, b) => {
