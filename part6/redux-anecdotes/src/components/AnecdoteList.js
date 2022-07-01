@@ -9,7 +9,11 @@ const AnecdoteList = () => {
   const vote = (id) => {
     console.log("vote", id);
     dispatch(voteAnecdote(id));
+
     dispatch(changeNotification(`Vote for #${id}`));
+    setTimeout(() => {
+      dispatch(changeNotification(""));
+    }, 5000);
   };
 
   const anecdotesByVotes = [...anecdotes].sort((a, b) => {
