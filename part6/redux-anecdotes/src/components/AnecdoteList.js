@@ -3,6 +3,7 @@ import { voteAnecdote } from "../reducers/anecdoteReducer";
 import { changeNotification } from "../reducers/notificationReducer";
 
 const AnecdoteList = () => {
+  const filter = useSelector((state) => state.filter);
   const anecdotes = useSelector((state) => state.anecdotes);
   const dispatch = useDispatch();
 
@@ -16,7 +17,10 @@ const AnecdoteList = () => {
     }, 5000);
   };
 
-  const anecdotesByVotes = [...anecdotes].sort((a, b) => {
+  const filteredAnecdotes = anecdotes.filter((anecdote) =>
+    anecdote.content.toLowerCase().includes(filter)
+  );
+  const anecdotesByVotes = filteredAnecdotes.sort((a, b) => {
     return b.votes - a.votes;
   });
 
