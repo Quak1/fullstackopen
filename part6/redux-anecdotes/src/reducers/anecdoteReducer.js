@@ -30,6 +30,11 @@ export const fetchAnecdotes = () => async (dispatch, getState) => {
   dispatch(setAnecdotes(anecdotes));
 };
 
+export const createAnecdote = (content) => async (dispatch, getState) => {
+  const anecdote = await anecdoteService.postNew(content);
+  dispatch(addAnecdote(anecdote));
+};
+
 export default anecdoteSlice.reducer;
 export const { voteAnecdote, addAnecdote, setAnecdotes } =
   anecdoteSlice.actions;
