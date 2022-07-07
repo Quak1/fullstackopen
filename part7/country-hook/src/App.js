@@ -16,9 +16,17 @@ const useField = (type) => {
 }
 
 const useCountry = (name) => {
+  const baseUrl = "https://restcountries.com/v3.1"
   const [country, setCountry] = useState(null)
 
-  useEffect(() => {})
+  useEffect(() => {
+    if (!name) return undefined
+    axios
+      .get(`${baseUrl}/name/${name}?fullText=true`)
+      .then(res => res.data[0])
+      .then(data => setCountry(data))
+      .catch(() => setCountry(null))
+  }, [name])
 
   return country
 }
@@ -31,11 +39,11 @@ const Country = ({ country }) => {
   return (
     <div>
       <h3>{country.name.common}</h3>
-      <div>population {country.population}</div> 
+      <div>population {country.population}</div>
       <div>capital {country.capital}</div>
-      <img src={country.flags.png} height='100' alt={`flag of ${country.name.common}`}/> 
+      <img src={country.flags.png} height='100' alt={`flag of ${country.name.common}`} />
     </div>
-  )  
+  )
 }
 
 const App = () => {
@@ -52,6 +60,7 @@ const App = () => {
     <div>
       <form onSubmit={fetch}>
         <input {...nameInput} />
+        {/* <input type="text" value={name} onChange={(event) => setName(event.target.value)} /> */}
         <button>find</button>
       </form>
 
