@@ -43,4 +43,3 @@ Cypress.Commands.add("logout", () => {
   localStorage.removeItem("loggedUser");
   cy.visit("http://localhost:3000");
 });
-
