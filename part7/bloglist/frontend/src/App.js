@@ -1,15 +1,15 @@
 import { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
+
 import BlogList from "./components/BlogList";
 import Notification from "./components/Notification";
 import Toggleable from "./components/Toggleable";
 import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
 
-import loginService from "./services/login";
+import { timedMessage } from "./utils";
 import { createBlog } from "./reducers/blogReducer";
 import { setUser } from "./reducers/userReducer";
-import { timedMessage } from "./utils";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -26,22 +26,10 @@ const App = () => {
     }
   }, []);
 
-  /* const handleLogout = () => {
+  const handleLogout = () => {
     window.localStorage.removeItem("loggedUser");
-    setUser(null);
+    dispatch(setUser(null));
     timedMessage(dispatch, "You have logged out!", "notification");
-  }; */
-
-  const sendCredentials = async (credentials) => {
-    try {
-      const user = await loginService.login(credentials);
-      window.localStorage.setItem("loggedUser", JSON.stringify(user));
-      dispatch(setUser(user));
-      timedMessage(dispatch, "You have logged in!", "notification");
-      return true;
-    } catch (exception) {
-      timedMessage(dispatch, "Wrong username or password", "error");
-    }
   };
 
   const funcreateBlog = async (blog) => {
@@ -69,6 +57,7 @@ const App = () => {
         <BlogForm createBlog={funcreateBlog} />
       </Toggleable>
       <BlogList />
+      <button onClick={handleLogout}>logout</button>
     </>
   );
 
@@ -76,11 +65,7 @@ const App = () => {
     <>
       <Notification message={errorMessage} />
       <Notification message={notification} type="notification" />
-      {user === null ? (
-        <LoginForm sendCredentials={sendCredentials} />
-      ) : (
-        loggedView()
-      )}
+      {user === null ? <LoginForm /> : loggedView()}
     </>
   );
 };

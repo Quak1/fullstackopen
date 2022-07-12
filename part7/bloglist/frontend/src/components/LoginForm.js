@@ -1,9 +1,25 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
+import { timedMessage } from "../utils";
+import loginService from "../services/login";
+import { setUser } from "../reducers/userReducer";
 
-const LoginForm = ({ sendCredentials }) => {
+const LoginForm = () => {
+  const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const sendCredentials = async (credentials) => {
+    try {
+      const user = await loginService.login(credentials);
+      window.localStorage.setItem("loggedUser", JSON.stringify(user));
+      dispatch(setUser(user));
+      timedMessage(dispatch, "You have logged in!", "notification");
+      return true;
+    } catch (exception) {
+      timedMessage(dispatch, "Wrong username or password", "error");
+    }
+  };
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -12,6 +28,7 @@ const LoginForm = ({ sendCredentials }) => {
     if (res) setUsername("");
     setPassword("");
   };
+
   return (
     <>
       <h2>Log in to application</h2>
@@ -38,10 +55,6 @@ const LoginForm = ({ sendCredentials }) => {
       </form>
     </>
   );
-};
-
-LoginForm.propTypes = {
-  sendCredentials: PropTypes.func.isRequired,
 };
 
 export default LoginForm;
