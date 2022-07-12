@@ -52,8 +52,7 @@ export const likeBlog = (blog) => async (dispatch) => {
 
 export const removeBlog = (id) => async (dispatch) => {
   try {
-    const res = await blogService.remove(id);
-    console.log(res);
+    await blogService.remove(id);
     dispatch(deleteBlog(id));
     timedMessage(dispatch, "Blog deleted", "notification");
   } catch (exception) {

@@ -25,14 +25,7 @@ const App = () => {
     }
   }, []);
 
-  /* const sortByLikes = (blogs) =>
-    blogs.sort((a, b) => {
-      if (a.likes > b.likes) return -1;
-      else if (a.likes < b.likes) return 1;
-      else return 0;
-    });
-
-  const handleLogout = () => {
+  /* const handleLogout = () => {
     window.localStorage.removeItem("loggedUser");
     setUser(null);
     timedMessage(dispatch, "You have logged out!", "notification");
