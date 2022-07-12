@@ -3,19 +3,23 @@ import blogService from "../services/blogs";
 
 export const counterSlice = createSlice({
   name: "blogs",
-  initialState: [],
+  initialState: null,
   reducers: {
     setBlogs: (state, action) => {
-      return action.payload;
+      const blogs = action.payload.reduce(
+        (obj, item) => ((obj[item.id] = item), obj),
+        {}
+      );
+      return blogs;
     },
     addBlog: (state, action) => {
-      state.concat(action.payload);
-      state.value += action.payload;
+      state[action.payload.id] = action.payload;
     },
-    likeBlog: (state, action) => {
-      const id = action.payload.id;
-      const blogToLike = state.find((b) => b.id === id);
-      blogToLike.likes += 1;
+    updateBlog: (state, action) => {
+      state[action.payload.id] = action.payload;
+    },
+    deleteBlog: (state, action) => {
+      delete state[action.payload];
     },
   },
 });
@@ -25,6 +29,16 @@ export const fetchBlogs = () => async (dispatch) => {
   dispatch(setBlogs(blogs));
 };
 
-export const { setBlogs, addBlog, likeBlog } = counterSlice.actions;
+export const createBlog = (blog) => async (dispatch, getState) => {
+  try {
+    const newBlog = await blogService.create(blog);
+    dispatch(addBlog(newBlog));
+  } catch (exception) {
+    console.log("creteBlog exception", exception);
+  }
+};
+
+export const { setBlogs, addBlog, updateBlog, deleteBlog } =
+  counterSlice.actions;
 
 export default counterSlice.reducer;
