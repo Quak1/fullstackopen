@@ -1,21 +1,25 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
+import { updateBlog, deleteBlog } from "../reducers/blogReducer";
+import { timedMessage } from "../utils";
 
-const Blog = ({ blog, likeBlog, removeBlog }) => {
+const Blog = ({ blog }) => {
+  const dispatch = useDispatch();
   const [showDetails, setShowDetails] = useState(false);
   let username = JSON.parse(localStorage.getItem("loggedUser")).username;
 
   const handleLike = () => {
-    const updatedBlog = {
+    const likedBlog = {
+      ...blog,
       likes: blog.likes + 1,
     };
-
-    likeBlog(updatedBlog, blog.id);
+    dispatch(updateBlog(likedBlog));
+    timedMessage(dispatch, "You liked a post!", "notification");
   };
 
   const handleRemove = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      removeBlog(blog.id);
+      dispatch(deleteBlog(blog.id));
     }
   };
 
@@ -44,12 +48,6 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
       <button onClick={() => setShowDetails(true)}>view</button>
     </div>
   );
-};
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  likeBlog: PropTypes.func.isRequired,
-  removeBlog: PropTypes.func.isRequired,
 };
 
 export default Blog;
