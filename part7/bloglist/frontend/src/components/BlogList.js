@@ -9,17 +9,11 @@ const BlogList = () => {
     (a, b) => blogs[b].likes - blogs[a].likes
   );
 
-  const handleLogout = () => {
-    // TODO
-    console.log("Handle logout in BlogList");
-  };
-
   return (
     <div>
       {blogsSortedByLikes.map((id) => (
         <Blog key={id} blog={blogs[id]} />
       ))}
-      <button onClick={handleLogout}>logout</button>
     </div>
   );
 };

@@ -4,7 +4,7 @@ export const notificationSlice = createSlice({
   name: "user",
   initialState: null,
   reducers: {
-    setUser: (state, action) => {
+    setUser: (_, action) => {
       return action.payload;
     },
     clearUser: () => {
