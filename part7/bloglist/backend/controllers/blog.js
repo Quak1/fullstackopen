@@ -57,4 +57,16 @@ blogRouter.put("/:id", userExtractor, async (request, response) => {
   }
 });
 
+blogRouter.post("/like/:id", async (request, response) => {
+  const blogid = request.params.id;
+  const blog = await Blog.findById(blogid);
+  if (!blog) {
+    response.status(404).end();
+  } else {
+    blog.likes += 1;
+    await blog.save();
+    response.json(blog);
+  }
+});
+
 module.exports = blogRouter;
