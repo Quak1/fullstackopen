@@ -50,6 +50,17 @@ export const likeBlog = (blog) => async (dispatch) => {
   }
 };
 
+export const removeBlog = (id) => async (dispatch) => {
+  try {
+    const res = await blogService.remove(id);
+    console.log(res);
+    dispatch(deleteBlog(id));
+    timedMessage(dispatch, "Blog deleted", "notification");
+  } catch (exception) {
+    timedMessage(dispatch, "Delete blog error", "error");
+  }
+};
+
 export const { setBlogs, addBlog, updateBlog, deleteBlog } =
   counterSlice.actions;
 
