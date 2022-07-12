@@ -8,7 +8,7 @@ import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
 
 import { timedMessage } from "./utils";
-import { setUser } from "./reducers/userReducer";
+import { clearUser, setUser } from "./reducers/userReducer";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -27,7 +27,7 @@ const App = () => {
 
   const handleLogout = () => {
     window.localStorage.removeItem("loggedUser");
-    dispatch(setUser(null));
+    dispatch(clearUser());
     timedMessage(dispatch, "You have logged out!", "notification");
   };
 
