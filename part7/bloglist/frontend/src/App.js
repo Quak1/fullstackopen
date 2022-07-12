@@ -6,6 +6,7 @@ import Notification from "./components/Notification";
 import Toggleable from "./components/Toggleable";
 import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
+import Users from "./components/Users";
 
 import { timedMessage } from "./utils";
 import { clearUser, setUser } from "./reducers/userReducer";
@@ -40,6 +41,7 @@ const App = () => {
       </Toggleable>
       <BlogList />
       <button onClick={handleLogout}>logout</button>
+      <Users />
     </>
   );
 
