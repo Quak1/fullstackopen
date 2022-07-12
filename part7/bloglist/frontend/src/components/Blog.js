@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { updateBlog, deleteBlog } from "../reducers/blogReducer";
-import { timedMessage } from "../utils";
+import { deleteBlog, likeBlog } from "../reducers/blogReducer";
 
 const Blog = ({ blog }) => {
   const dispatch = useDispatch();
@@ -9,12 +8,7 @@ const Blog = ({ blog }) => {
   let username = JSON.parse(localStorage.getItem("loggedUser")).username;
 
   const handleLike = () => {
-    const likedBlog = {
-      ...blog,
-      likes: blog.likes + 1,
-    };
-    dispatch(updateBlog(likedBlog));
-    timedMessage(dispatch, "You liked a post!", "notification");
+    dispatch(likeBlog(blog));
   };
 
   const handleRemove = () => {

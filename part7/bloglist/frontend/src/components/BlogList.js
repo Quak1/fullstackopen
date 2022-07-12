@@ -6,6 +6,7 @@ const BlogList = () => {
   if (!blogs) return null;
 
   const handleLogout = () => {
+    // TODO
     console.log("Handle logout in BlogList");
   };
 

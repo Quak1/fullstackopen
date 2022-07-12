@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import blogService from "../services/blogs";
+import { timedMessage } from "../utils";
 
 export const counterSlice = createSlice({
   name: "blogs",
@@ -29,12 +30,23 @@ export const fetchBlogs = () => async (dispatch) => {
   dispatch(setBlogs(blogs));
 };
 
-export const createBlog = (blog) => async (dispatch, getState) => {
+export const createBlog = (blog) => async (dispatch) => {
   try {
     const newBlog = await blogService.create(blog);
     dispatch(addBlog(newBlog));
   } catch (exception) {
-    console.log("creteBlog exception", exception);
+    timedMessage(dispatch, "Create blog error", "error");
+  }
+};
+
+export const likeBlog = (blog) => async (dispatch) => {
+  try {
+    const resBlog = await blogService.like(blog.id);
+    resBlog.user = blog.user;
+    dispatch(updateBlog(resBlog));
+    timedMessage(dispatch, "You liked a post!", "notification");
+  } catch (exception) {
+    timedMessage(dispatch, "Like blog error", "error");
   }
 };
 
