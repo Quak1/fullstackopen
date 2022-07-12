@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import BlogList from "./components/BlogList";
 import Notification from "./components/Notification";
@@ -8,11 +8,12 @@ import LoginForm from "./components/LoginForm";
 
 import loginService from "./services/login";
 import { createBlog } from "./reducers/blogReducer";
+import { setUser } from "./reducers/userReducer";
 import { timedMessage } from "./utils";
 
 const App = () => {
   const dispatch = useDispatch();
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.user);
   const errorMessage = useSelector((state) => state.notifications.error);
   const notification = useSelector((state) => state.notifications.notification);
   const newBlogFormRef = useRef();
@@ -21,7 +22,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem("loggedUser");
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
-      setUser(user);
+      dispatch(setUser(user));
     }
   }, []);
 
@@ -35,7 +36,7 @@ const App = () => {
     try {
       const user = await loginService.login(credentials);
       window.localStorage.setItem("loggedUser", JSON.stringify(user));
-      setUser(user);
+      dispatch(setUser(user));
       timedMessage(dispatch, "You have logged in!", "notification");
       return true;
     } catch (exception) {
