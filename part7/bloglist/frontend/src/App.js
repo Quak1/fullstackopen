@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Routes, Route } from "react-router-dom";
 
 import BlogList from "./components/BlogList";
 import Notification from "./components/Notification";
@@ -36,12 +37,21 @@ const App = () => {
     <>
       <h2>Blogs</h2>
       <p>{user.name} logged in</p>
-      <Toggleable buttonLabel="new blog" ref={newBlogFormRef}>
-        <BlogForm toggleableRef={newBlogFormRef} />
-      </Toggleable>
-      <BlogList />
       <button onClick={handleLogout}>logout</button>
-      <Users />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <Toggleable buttonLabel="new blog" ref={newBlogFormRef}>
+                <BlogForm toggleableRef={newBlogFormRef} />
+              </Toggleable>
+              <BlogList />
+            </>
+          }
+        />
+        <Route path="/users" element={<Users />} />
+      </Routes>
     </>
   );
 
