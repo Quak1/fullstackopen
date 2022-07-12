@@ -1,33 +1,21 @@
 import { useState, useEffect, useRef } from "react";
-import Blog from "./components/Blog";
+import { useSelector, useDispatch } from "react-redux";
+import BlogList from "./components/BlogList";
 import Notification from "./components/Notification";
 import Toggleable from "./components/Toggleable";
 import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
 
-import blogService from "./services/blogs";
 import loginService from "./services/login";
-
-const timedMessage = (message, setter, time = 5000) => {
-  setter(message);
-  setTimeout(() => {
-    setter(null);
-  }, time);
-};
+import { createBlog } from "./reducers/blogReducer";
+import { timedMessage } from "./utils";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  const dispatch = useDispatch();
   const [user, setUser] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [notification, setNotification] = useState(null);
+  const errorMessage = useSelector((state) => state.notifications.error);
+  const notification = useSelector((state) => state.notifications.notification);
   const newBlogFormRef = useRef();
-
-  useEffect(() => {
-    blogService
-      .getAll()
-      .then((blogs) => sortByLikes(blogs))
-      .then((blogs) => setBlogs(blogs));
-  }, []);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedUser");
@@ -37,7 +25,7 @@ const App = () => {
     }
   }, []);
 
-  const sortByLikes = (blogs) =>
+  /* const sortByLikes = (blogs) =>
     blogs.sort((a, b) => {
       if (a.likes > b.likes) return -1;
       else if (a.likes < b.likes) return 1;
@@ -47,88 +35,46 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem("loggedUser");
     setUser(null);
-    timedMessage("You have logged out!", setNotification);
-  };
+    timedMessage(dispatch, "You have logged out!", "notification");
+  }; */
 
   const sendCredentials = async (credentials) => {
     try {
       const user = await loginService.login(credentials);
       window.localStorage.setItem("loggedUser", JSON.stringify(user));
       setUser(user);
-      timedMessage("You have logged in!", setNotification);
+      timedMessage(dispatch, "You have logged in!", "notification");
       return true;
     } catch (exception) {
-      timedMessage("Wrong username or password", setErrorMessage);
+      timedMessage(dispatch, "Wrong username or password", "error");
     }
   };
 
-  const createBlog = async (newBlog) => {
+  const funcreateBlog = async (blog) => {
     try {
-      const createdBlog = await blogService.create(newBlog);
-      setBlogs(blogs.concat(createdBlog));
+      /* const createdBlog = await blogService.create(newBlog);
+      setBlogs(blogs.concat(createdBlog)); */
+      dispatch(createBlog(blog));
 
-      timedMessage(
+      /* timedMessage(
         `A new blog ${newBlog.title} by ${newBlog.author} has been added`,
         setNotification
-      );
+      ); */
       newBlogFormRef.current.toggleVisibility();
       return true;
     } catch (exception) {
-      timedMessage("Please fill all the required(*) fields", setErrorMessage);
+      timedMessage(dispatch, "Please fill all the required(*) fields", "error");
     }
   };
-
-  const likeBlog = async (updateBlog, blogId) => {
-    try {
-      const res = await blogService.update(updateBlog, blogId);
-      const updatedBlogs = blogs.map((b) => {
-        if (b.id === blogId)
-          return {
-            ...b,
-            likes: res.likes,
-          };
-        return b;
-      });
-      // setBlogs(sortByLikes(updatedBlogs));
-      setBlogs(updatedBlogs);
-      timedMessage("You liked a post!", setNotification);
-    } catch (exception) {
-      timedMessage("An error occurred liking that post", setErrorMessage);
-    }
-  };
-
-  const removeBlog = async (blogId) => {
-    try {
-      await blogService.remove(blogId);
-      setBlogs(blogs.filter((b) => b.id !== blogId));
-      timedMessage("You removed a post!", setNotification);
-    } catch (exception) {
-      timedMessage("An error occurred deleted this post", setErrorMessage);
-    }
-  };
-
-  const blogList = () => (
-    <div>
-      {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          likeBlog={likeBlog}
-          removeBlog={removeBlog}
-        />
-      ))}
-      <button onClick={handleLogout}>logout</button>
-    </div>
-  );
 
   const loggedView = () => (
     <>
       <h2>Blogs</h2>
       <p>{user.name} logged in</p>
       <Toggleable buttonLabel="new blog" ref={newBlogFormRef}>
-        <BlogForm createBlog={createBlog} />
+        <BlogForm createBlog={funcreateBlog} />
       </Toggleable>
-      {blogList()}
+      <BlogList />
     </>
   );
 
