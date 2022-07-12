@@ -6,7 +6,7 @@ export const counterSlice = createSlice({
   name: "blogs",
   initialState: null,
   reducers: {
-    setBlogs: (state, action) => {
+    setBlogs: (_, action) => {
       const blogs = action.payload.reduce(
         (obj, item) => ((obj[item.id] = item), obj),
         {}
@@ -34,8 +34,13 @@ export const createBlog = (blog) => async (dispatch) => {
   try {
     const newBlog = await blogService.create(blog);
     dispatch(addBlog(newBlog));
+    timedMessage(
+      dispatch,
+      `A new blog ${newBlog.title} by ${newBlog.author} has benn added`
+    );
+    return true;
   } catch (exception) {
-    timedMessage(dispatch, "Create blog error", "error");
+    timedMessage(dispatch, "Please fill all the required(*) fields", "error");
   }
 };
 

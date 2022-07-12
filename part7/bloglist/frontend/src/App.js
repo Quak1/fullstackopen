@@ -8,7 +8,6 @@ import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
 
 import { timedMessage } from "./utils";
-import { createBlog } from "./reducers/blogReducer";
 import { setUser } from "./reducers/userReducer";
 
 const App = () => {
@@ -32,29 +31,12 @@ const App = () => {
     timedMessage(dispatch, "You have logged out!", "notification");
   };
 
-  const funcreateBlog = async (blog) => {
-    try {
-      /* const createdBlog = await blogService.create(newBlog);
-      setBlogs(blogs.concat(createdBlog)); */
-      dispatch(createBlog(blog));
-
-      /* timedMessage(
-        `A new blog ${newBlog.title} by ${newBlog.author} has been added`,
-        setNotification
-      ); */
-      newBlogFormRef.current.toggleVisibility();
-      return true;
-    } catch (exception) {
-      timedMessage(dispatch, "Please fill all the required(*) fields", "error");
-    }
-  };
-
   const loggedView = () => (
     <>
       <h2>Blogs</h2>
       <p>{user.name} logged in</p>
       <Toggleable buttonLabel="new blog" ref={newBlogFormRef}>
-        <BlogForm createBlog={funcreateBlog} />
+        <BlogForm toggleableRef={newBlogFormRef} />
       </Toggleable>
       <BlogList />
       <button onClick={handleLogout}>logout</button>
