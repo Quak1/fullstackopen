@@ -1,13 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Routes, Route } from "react-router-dom";
 
-import BlogList from "./components/BlogList";
 import Notification from "./components/Notification";
-import Toggleable from "./components/Toggleable";
-import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
 import Users from "./components/Users";
+import Home from "./components/Home";
 
 import { timedMessage } from "./utils";
 import { clearUser, setUser } from "./reducers/userReducer";
@@ -17,7 +15,6 @@ const App = () => {
   const user = useSelector((state) => state.user);
   const errorMessage = useSelector((state) => state.notifications.error);
   const notification = useSelector((state) => state.notifications.notification);
-  const newBlogFormRef = useRef();
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedUser");
@@ -36,20 +33,11 @@ const App = () => {
   const loggedView = () => (
     <>
       <h2>Blogs</h2>
-      <p>{user.name} logged in</p>
-      <button onClick={handleLogout}>logout</button>
+      <p>
+        {user.name} logged in <button onClick={handleLogout}>logout</button>
+      </p>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <Toggleable buttonLabel="new blog" ref={newBlogFormRef}>
-                <BlogForm toggleableRef={newBlogFormRef} />
-              </Toggleable>
-              <BlogList />
-            </>
-          }
-        />
+        <Route path="/" element={<Home />} />
         <Route path="/users" element={<Users />} />
       </Routes>
     </>
