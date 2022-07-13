@@ -1,9 +1,8 @@
 const CommentList = ({ comments }) => {
-  if (!comments.length) return <h3>No comments</h3>;
+  if (!comments.length) return <h4>no comments</h4>;
 
   return (
     <div>
-      <h3>Comments</h3>
       <ul>
         {comments.map((comment, i) => (
           <li key={i}>{comment}</li>

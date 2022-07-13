@@ -44,4 +44,9 @@ const like = async (blogId) => {
   return res.data;
 };
 
-export default { getAll, setToken, create, update, remove, like };
+const comment = async (blogId, comment) => {
+  const res = await axios.post(`${baseUrl}/${blogId}/comments`, { comment });
+  return res.data;
+};
+
+export default { getAll, setToken, create, update, remove, like, comment };

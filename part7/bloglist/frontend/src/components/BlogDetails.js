@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import CommentList from "./CommentList";
+import CommentForm from "./CommentForm";
 import { fetchBlogs, likeBlog, removeBlog } from "../reducers/blogReducer";
 
 const BlogDetails = () => {
@@ -44,6 +45,8 @@ const BlogDetails = () => {
       {username === blog.user.username ? (
         <button onClick={handleRemove}>remove</button>
       ) : null}
+      <h3>Comments</h3>
+      <CommentForm id={blog.id} />
       <CommentList comments={blog.comments} />
     </>
   );

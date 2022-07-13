@@ -65,6 +65,16 @@ export const removeBlog = (id) => async (dispatch) => {
   }
 };
 
+export const commentBlog = (id, comment) => async (dispatch) => {
+  try {
+    const blog = await blogService.comment(id, comment);
+    dispatch(updateBlog(blog));
+    timedMessage(dispatch, "Comment added", "notification");
+  } catch (exception) {
+    timedMessage(dispatch, "Add comment error", "error");
+  }
+};
+
 export const { setBlogs, addBlog, updateBlog, deleteBlog } =
   counterSlice.actions;
 
