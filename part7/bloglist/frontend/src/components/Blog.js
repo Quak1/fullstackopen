@@ -4,7 +4,7 @@ import { ListItem, ListItemButton } from "@mui/material";
 const Blog = ({ blog }) => {
   return (
     <ListItem disablePadding>
-      <ListItemButton component={Link} to={`blogs/${blog.id}`}>
+      <ListItemButton component={Link} to={`/blogs/${blog.id}`}>
         {blog.title} by {blog.author}
       </ListItemButton>
     </ListItem>
