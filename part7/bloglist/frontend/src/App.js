@@ -4,7 +4,8 @@ import { Routes, Route } from "react-router-dom";
 
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
-import Users from "./components/Users";
+import UsersList from "./components/UserList";
+import User from "./components/User";
 import Home from "./components/Home";
 
 import { timedMessage } from "./utils";
@@ -38,7 +39,8 @@ const App = () => {
       </p>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/users" element={<Users />} />
+        <Route path="/users" element={<UsersList />} />
+        <Route path="/users/:id" element={<User />} />
       </Routes>
     </>
   );

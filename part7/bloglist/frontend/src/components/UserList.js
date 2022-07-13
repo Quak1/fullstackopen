@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { fetchUsers } from "../reducers/usersReducer";
 
-const BlogList = () => {
+const UserList = () => {
   const dispatch = useDispatch();
   const users = useSelector((state) => state.users);
   if (!users) {
@@ -22,7 +23,9 @@ const BlogList = () => {
         <tbody>
           {users.map((user) => (
             <tr key={user.id}>
-              <td>{user.name}</td>
+              <td>
+                <Link to={`${user.id}`}>{user.name}</Link>
+              </td>
               <td>{user.blogs.length}</td>
             </tr>
           ))}
@@ -32,4 +35,4 @@ const BlogList = () => {
   );
 };
 
-export default BlogList;
+export default UserList;
