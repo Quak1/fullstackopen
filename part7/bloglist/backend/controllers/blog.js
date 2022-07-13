@@ -69,4 +69,18 @@ blogRouter.post("/like/:id", async (request, response) => {
   }
 });
 
+blogRouter.post("/:id/comments", async (request, response) => {
+  const blogid = request.params.id;
+  const comment = request.body.comment;
+
+  const blog = await Blog.findById(blogid);
+  if (!blog) {
+    response.status(404).end();
+  } else {
+    blog.comments.push(comment);
+    const newBlog = await blog.save();
+    response.json(newBlog);
+  }
+});
+
 module.exports = blogRouter;
