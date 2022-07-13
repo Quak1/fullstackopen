@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { TextField, Button, Container, Box } from "@mui/material";
+import { TextField, Button, Container, Box, Typography } from "@mui/material";
 
 import { timedMessage } from "../utils";
 import loginService from "../services/login";
@@ -41,7 +41,9 @@ const LoginForm = () => {
           alignItems: "center",
         }}
       >
-        <h2>Log in</h2>
+        <Typography variant="h4" my={3}>
+          Log in
+        </Typography>
         <Box component="form" onSubmit={handleLogin}>
           <TextField
             value={username}

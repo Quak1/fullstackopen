@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { TextField, Container, Box, Button, Typography } from "@mui/material";
+import { TextField, Box, Button, Typography } from "@mui/material";
 
 import { createBlog } from "../reducers/blogReducer";
 
@@ -32,9 +32,7 @@ const BlogForm = ({ toggleableRef }) => {
           maxWidth: "40%",
         }}
       >
-        <Typography variant="h5" component="h2">
-          Create new
-        </Typography>
+        <Typography variant="h5">Create new</Typography>
         <Box component="form" onSubmit={handleNewBlog}>
           <TextField
             value={title}

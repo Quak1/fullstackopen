@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Routes, Route } from "react-router-dom";
 import { CssBaseline, Container } from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
@@ -12,6 +13,19 @@ import BlogDetails from "./components/BlogDetails";
 import NavBar from "./components/NavBar";
 
 import { setUser } from "./reducers/userReducer";
+
+const theme = createTheme({
+  components: {
+    MuiTypography: {
+      defaultProps: {
+        variantMapping: {
+          h4: "h1",
+          h5: "h2",
+        },
+      },
+    },
+  },
+});
 
 const App = () => {
   const dispatch = useDispatch();
@@ -29,7 +43,6 @@ const App = () => {
 
   const loggedView = () => (
     <>
-      <h2>Blogs</h2>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/users" element={<UsersList />} />
@@ -40,7 +53,7 @@ const App = () => {
   );
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <NavBar />
       <Notification message={errorMessage} />
@@ -48,7 +61,7 @@ const App = () => {
       <Container maxWidth="md">
         {user === null ? <LoginForm /> : loggedView()}
       </Container>
-    </>
+    </ThemeProvider>
   );
 };
 
