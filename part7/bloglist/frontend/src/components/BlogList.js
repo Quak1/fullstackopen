@@ -1,5 +1,7 @@
-import Blog from "./Blog";
 import { useSelector } from "react-redux";
+import { List, Divider } from "@mui/material";
+
+import Blog from "./Blog";
 
 const BlogList = () => {
   const blogs = useSelector((state) => state.blogs);
@@ -10,11 +12,14 @@ const BlogList = () => {
   );
 
   return (
-    <div>
+    <List>
       {blogsSortedByLikes.map((id) => (
-        <Blog key={id} blog={blogs[id]} />
+        <>
+          <Blog key={id} blog={blogs[id]} />
+          <Divider />
+        </>
       ))}
-    </div>
+    </List>
   );
 };
 
