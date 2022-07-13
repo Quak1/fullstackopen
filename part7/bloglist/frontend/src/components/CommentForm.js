@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { Box, Typography, TextField, Button } from "@mui/material";
 
 import { commentBlog } from "../reducers/blogReducer";
 
@@ -14,15 +15,21 @@ const CommentList = ({ id }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={newComment}
-        name="Comment"
-        onChange={({ target }) => setNewComment(target.value)}
-      />
-      <button type="submit">add comment</button>
-    </form>
+    <Box>
+      <Typography variant="h5">Comments</Typography>
+      <Box component="form" onSubmit={handleSubmit}>
+        <TextField
+          value={newComment}
+          onChange={({ target }) => setNewComment(target.value)}
+          name="Comment"
+          label="New comment"
+          size="small"
+        />
+        <Button type="submit" variant="contained" size="small">
+          add comment
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

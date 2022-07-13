@@ -56,9 +56,9 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <NavBar />
-      <Notification message={errorMessage} />
-      <Notification message={notification} type="notification" />
       <Container maxWidth="md">
+        <Notification message={errorMessage} />
+        <Notification message={notification} type="notification" />
         {user === null ? <LoginForm /> : loggedView()}
       </Container>
     </ThemeProvider>

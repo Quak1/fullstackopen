@@ -1,5 +1,13 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
+import {
+  Box,
+  Typography,
+  Divider,
+  Card,
+  CardContent,
+  Button,
+} from "@mui/material";
 
 import CommentList from "./CommentList";
 import CommentForm from "./CommentForm";
@@ -34,18 +42,30 @@ const BlogDetails = () => {
 
   return (
     <>
-      <h2>
+      <Typography variant="h4">
         {blog.title} by {blog.author}
-      </h2>
-      <div>{blog.url}</div>
-      <div>
-        likes: {blog.likes} <button onClick={handleLike}>like</button>
-      </div>
-      <div>added by {blog.user.name}</div>
+      </Typography>
+      <Divider />
+
+      <Card variant="outlined" sx={{ my: 2, maxWidth: 250 }}>
+        <CardContent>
+          <Typography>{blog.url}</Typography>
+          <Typography>
+            Likes: {blog.likes}{" "}
+            <Button onClick={handleLike} variant="outlined" size="small">
+              like
+            </Button>
+          </Typography>
+          <Typography>Added by {blog.user.name}</Typography>
+        </CardContent>
+      </Card>
+
       {username === blog.user.username ? (
-        <button onClick={handleRemove}>remove</button>
+        <Button onClick={handleRemove} color="error">
+          remove
+        </Button>
       ) : null}
-      <h3>Comments</h3>
+
       <CommentForm id={blog.id} />
       <CommentList comments={blog.comments} />
     </>
