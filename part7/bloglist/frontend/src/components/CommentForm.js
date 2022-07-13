@@ -17,7 +17,7 @@ const CommentList = ({ id }) => {
   return (
     <Box>
       <Typography variant="h5">Comments</Typography>
-      <Box component="form" onSubmit={handleSubmit}>
+      <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex" }}>
         <TextField
           value={newComment}
           onChange={({ target }) => setNewComment(target.value)}
@@ -25,7 +25,12 @@ const CommentList = ({ id }) => {
           label="New comment"
           size="small"
         />
-        <Button type="submit" variant="contained" size="small">
+        <Button
+          type="submit"
+          variant="contained"
+          size="small"
+          sx={{ alignSelf: "center", ml: 1 }}
+        >
           add comment
         </Button>
       </Box>
