@@ -23,3 +23,18 @@
   border-width: 1px;
   margin-bottom: 5px;
 }
+
+nav {
+  background-color: #d3d3d3;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 10px;
+}
+
+nav li {
+  display: inline;
+  margin: 10px;
+}

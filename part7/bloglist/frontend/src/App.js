@@ -8,9 +8,9 @@ import UsersList from "./components/UserList";
 import User from "./components/User";
 import Home from "./components/Home";
 import BlogDetails from "./components/BlogDetails";
+import NavBar from "./components/NavBar";
 
-import { timedMessage } from "./utils";
-import { clearUser, setUser } from "./reducers/userReducer";
+import { setUser } from "./reducers/userReducer";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -26,18 +26,9 @@ const App = () => {
     }
   }, []);
 
-  const handleLogout = () => {
-    window.localStorage.removeItem("loggedUser");
-    dispatch(clearUser());
-    timedMessage(dispatch, "You have logged out!", "notification");
-  };
-
   const loggedView = () => (
     <>
       <h2>Blogs</h2>
-      <p>
-        {user.name} logged in <button onClick={handleLogout}>logout</button>
-      </p>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/users" element={<UsersList />} />
@@ -49,6 +40,7 @@ const App = () => {
 
   return (
     <>
+      <NavBar />
       <Notification message={errorMessage} />
       <Notification message={notification} type="notification" />
       {user === null ? <LoginForm /> : loggedView()}
