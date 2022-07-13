@@ -69,7 +69,7 @@ blogRouter.post("/like/:id", async (request, response) => {
   }
 });
 
-blogRouter.post("/:id/comments", async (request, response) => {
+blogRouter.post("/:id/comments", userExtractor, async (request, response) => {
   const blogid = request.params.id;
   const comment = request.body.comment;
 
