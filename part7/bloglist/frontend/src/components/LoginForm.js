@@ -64,11 +64,7 @@ const LoginForm = () => {
             margin="dense"
             fullWidth
           />
-          <Button
-            type="submit"
-            variant="contained"
-            sc={{ alignSelf: "flex-end" }}
-          >
+          <Button type="submit" variant="contained">
             login
           </Button>
         </Box>

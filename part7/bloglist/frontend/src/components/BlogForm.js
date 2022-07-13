@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { TextField, Container, Box, Button, Typography } from "@mui/material";
+
 import { createBlog } from "../reducers/blogReducer";
 
 const BlogForm = ({ toggleableRef }) => {
@@ -23,40 +25,51 @@ const BlogForm = ({ toggleableRef }) => {
 
   return (
     <>
-      <h2>Create new</h2>
-      <form onSubmit={handleNewBlog}>
-        <div>
-          Title*
-          <input
-            type="text"
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          maxWidth: "40%",
+        }}
+      >
+        <Typography variant="h5" component="h2">
+          Create new
+        </Typography>
+        <Box component="form" onSubmit={handleNewBlog}>
+          <TextField
             value={title}
-            name="Title"
             onChange={({ target }) => setTitle(target.value)}
-            placeholder="title"
+            name="Title"
+            size="small"
+            label="title"
+            required
+            margin="dense"
+            fullWidth
           />
-        </div>
-        <div>
-          Author*
-          <input
-            type="text"
+          <TextField
             value={author}
-            name="Author"
             onChange={({ target }) => setAuthor(target.value)}
-            placeholder="author"
+            name="Author"
+            size="small"
+            label="author"
+            required
+            margin="dense"
+            fullWidth
           />
-        </div>
-        <div>
-          url
-          <input
-            type="text"
+          <TextField
             value={url}
-            name="Url"
             onChange={({ target }) => setUrl(target.value)}
-            placeholder="url"
+            name="Url"
+            size="small"
+            label="url"
+            margin="dense"
+            fullWidth
           />
-        </div>
-        <button type="submit">create</button>
-      </form>
+          <Button type="submit" variant="contained">
+            create
+          </Button>
+        </Box>
+      </Box>
     </>
   );
 };
