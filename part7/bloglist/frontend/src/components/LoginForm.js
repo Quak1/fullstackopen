@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { TextField, Button, Container, Box } from "@mui/material";
+
 import { timedMessage } from "../utils";
 import loginService from "../services/login";
 import { setUser } from "../reducers/userReducer";
@@ -30,30 +32,48 @@ const LoginForm = () => {
   };
 
   return (
-    <>
-      <h2>Log in to application</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          username{" "}
-          <input
-            type="text"
+    <Container component={"main"} maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 2,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <h2>Log in</h2>
+        <Box component="form" onSubmit={handleLogin}>
+          <TextField
             value={username}
-            name="Username"
             onChange={({ target }) => setUsername(target.value)}
+            name="Username"
+            label="Username"
+            required
+            size="small"
+            fullWidth
+            autoFocus
           />
-        </div>
-        <div>
-          password{" "}
-          <input
-            type="password"
+          <TextField
             value={password}
-            name="Password"
             onChange={({ target }) => setPassword(target.value)}
+            type="password"
+            name="Password"
+            label="Password"
+            required
+            size="small"
+            margin="dense"
+            fullWidth
           />
-        </div>
-        <button type="submit">login</button>
-      </form>
-    </>
+          <Button
+            type="submit"
+            variant="contained"
+            sc={{ alignSelf: "flex-end" }}
+          >
+            login
+          </Button>
+        </Box>
+      </Box>
+    </Container>
   );
 };
 
