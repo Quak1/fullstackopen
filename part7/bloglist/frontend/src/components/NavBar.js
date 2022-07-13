@@ -18,7 +18,7 @@ const NavBar = () => {
   if (!user) return null;
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ mb: 1 }}>
       <Container maxWidth="md">
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1 }}>

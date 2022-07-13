@@ -9,9 +9,7 @@ const Home = () => {
   const newBlogFormRef = useRef();
   return (
     <div>
-      <Typography variant="h4" mt={2}>
-        Blogs
-      </Typography>
+      <Typography variant="h4">Blogs</Typography>
       <Toggleable buttonLabel="new blog" ref={newBlogFormRef}>
         <BlogForm toggleableRef={newBlogFormRef} />
       </Toggleable>

@@ -1,5 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import {
+  Typography,
+  Button,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  TableContainer,
+} from "@mui/material";
+
 import { fetchUsers } from "../reducers/usersReducer";
 
 const UserList = () => {
@@ -11,27 +22,28 @@ const UserList = () => {
   }
 
   return (
-    <div>
-      <h2>Users</h2>
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>blogs created</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>
-                <Link to={`${user.id}`}>{user.name}</Link>
-              </td>
-              <td>{user.blogs.length}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Table size="small">
+      <TableHead>
+        <TableRow>
+          <TableCell>
+            <Typography variant="h4">Users</Typography>
+          </TableCell>
+          <TableCell>Blogs created</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {users.map((user) => (
+          <TableRow key={user.id}>
+            <TableCell>
+              <Button component={Link} to={`${user.id}`}>
+                {user.name}
+              </Button>
+            </TableCell>
+            <TableCell>{user.blogs.length}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 };
 
