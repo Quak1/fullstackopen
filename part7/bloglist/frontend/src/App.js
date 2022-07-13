@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Routes, Route } from "react-router-dom";
-import { CssBaseline } from "@mui/material";
+import { CssBaseline, Container } from "@mui/material";
 
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
@@ -45,7 +45,9 @@ const App = () => {
       <NavBar />
       <Notification message={errorMessage} />
       <Notification message={notification} type="notification" />
-      {user === null ? <LoginForm /> : loggedView()}
+      <Container maxWidth="md">
+        {user === null ? <LoginForm /> : loggedView()}
+      </Container>
     </>
   );
 };

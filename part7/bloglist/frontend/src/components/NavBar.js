@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { AppBar, Container, Toolbar, Button, Box } from "@mui/material";
 
 import { timedMessage } from "../utils";
 import { clearUser } from "../reducers/userReducer";
@@ -17,19 +18,26 @@ const NavBar = () => {
   if (!user) return null;
 
   return (
-    <nav>
-      <ul>
-        <li>
-          <Link to="/">blogs</Link>
-        </li>
-        <li>
-          <Link to="/users">users</Link>
-        </li>
-        <li>
-          {user.name} logged in <button onClick={handleLogout}>logout</button>
-        </li>
-      </ul>
-    </nav>
+    <AppBar position="static">
+      <Container maxWidth="md">
+        <Toolbar disableGutters>
+          <Box sx={{ flexGrow: 1 }}>
+            <Button color="inherit" component={Link} to="/">
+              blogs
+            </Button>
+            <Button color="inherit" component={Link} to="/users">
+              users
+            </Button>
+          </Box>
+          <Box sx={{ flexGrow: 0 }}>
+            <em>{user.name} logged in</em>
+            <Button color="inherit" onClick={handleLogout}>
+              logout
+            </Button>
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 };
 
