@@ -1,9 +1,13 @@
-const Books = (props) => {
-  if (!props.show) {
-    return null
-  }
+import { useQuery } from "@apollo/client";
 
-  const books = []
+import { ALL_BOOKS } from "../queries";
+
+const Books = (props) => {
+  const res = useQuery(ALL_BOOKS);
+
+  if (!props.show || res.loading) return null;
+
+  const books = res.data.allBooks;
 
   return (
     <div>
@@ -26,7 +30,7 @@ const Books = (props) => {
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};
 
-export default Books
+export default Books;
