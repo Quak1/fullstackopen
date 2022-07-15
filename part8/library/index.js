@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require("apollo-server");
+const { ApolloServer, gql, UserInputError } = require("apollo-server");
 const { v1: uuid } = require("uuid");
 const mongoose = require("mongoose");
 
@@ -77,15 +77,28 @@ const resolvers = {
         author = new Author({ name: args.author });
         await author.save();
       }
+
       const newBook = new Book({ ...args, author: author.id });
-      return newBook.save();
+      try {
+        await newBook.save();
+      } catch (error) {
+        throw new UserInputError("Duplicate title");
+      }
+
+      return newBook;
     },
     editAuthor: async (root, args) => {
       const author = await Author.findOne({ name: args.name });
       if (!author) return null;
 
-      author.born = args.born;
-      return author.save();
+      try {
+        author.born = args.born;
+        await author.save();
+      } catch (error) {
+        throw new UserInputError("Invalid data");
+      }
+
+      return author;
     },
   },
   Author: {
