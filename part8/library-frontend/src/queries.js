@@ -44,6 +44,7 @@ export const ADD_BOOK = gql`
         name
         bookCount
       }
+      genres
       id
     }
   }
