@@ -108,7 +108,7 @@ const resolvers = {
         throw new UserInputError(error.message);
       }
 
-      return newBook;
+      return newBook.populate("author");
     },
     editAuthor: async (root, args, { currentUser }) => {
       if (!currentUser) throw new AuthenticationError("Not authenticated");

@@ -21,9 +21,10 @@ const NewBook = (props) => {
     event.preventDefault();
 
     console.log("add book...");
-    addBook({
+    const res = await addBook({
       variables: { title, author, published: Number(published), genres },
     });
+    console.log(res);
 
     setTitle("");
     setPublished("");
