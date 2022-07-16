@@ -65,3 +65,12 @@ export const LOGIN = gql`
     }
   }
 `;
+
+export const ME = gql`
+  query Me {
+    me {
+      favouriteGenre
+      username
+    }
+  }
+`;
