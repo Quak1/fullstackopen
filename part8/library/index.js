@@ -1,10 +1,11 @@
 const { ApolloServer, gql, UserInputError } = require("apollo-server");
-const { v1: uuid } = require("uuid");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 
-const { MONGODB_URI } = require("./utils/config");
+const { MONGODB_URI, JWT_SECRET } = require("./utils/config");
 const Book = require("./models/book");
 const Author = require("./models/author");
+const User = require("./models/user.js");
 
 console.log("connecting to MongoDB");
 mongoose
@@ -35,11 +36,22 @@ const typeDefs = gql`
     id: ID!
   }
 
+  type User {
+    username: String!
+    favouriteGenre: String!
+    id: ID!
+  }
+
+  type Token {
+    value: String!
+  }
+
   type Query {
     bookCount: Int
     authorCount: Int
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+    me: User
   }
 
   type Mutation {
@@ -51,6 +63,9 @@ const typeDefs = gql`
     ): Book
 
     editAuthor(name: String!, born: Int!): Author
+
+    createUser(username: String!, favouriteGenre: String!): User
+    login(username: String!, password: String!): Token
   }
 `;
 
@@ -69,6 +84,7 @@ const resolvers = {
       return await Book.find(query).populate("author");
     },
     allAuthors: async () => await Author.find({}),
+    me: (root, args, context) => context.currentUser,
   },
   Mutation: {
     addBook: async (root, args) => {
@@ -82,7 +98,7 @@ const resolvers = {
       try {
         await newBook.save();
       } catch (error) {
-        throw new UserInputError("Duplicate title");
+        throw new UserInputError(error.message);
       }
 
       return newBook;
@@ -95,10 +111,34 @@ const resolvers = {
         author.born = args.born;
         await author.save();
       } catch (error) {
-        throw new UserInputError("Invalid data");
+        throw new UserInputError(error.message);
       }
 
       return author;
+    },
+    createUser: async (root, args) => {
+      try {
+        const user = new User(args);
+        await user.save();
+        return user;
+      } catch (error) {
+        throw new UserInputError(error.message);
+      }
+    },
+    login: async (root, args) => {
+      const user = await User.findOne({ username: args.username });
+
+      if (!user || args.password !== "password") {
+        throw new UserInputError("Wrong credentials");
+      }
+
+      const userForToken = {
+        username: user.username,
+        id: user._id,
+      };
+      const token = jwt.sign(userForToken, JWT_SECRET);
+
+      return { value: token };
     },
   },
   Author: {
@@ -112,6 +152,14 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: async ({ req }) => {
+    const auth = req ? req.headers.authorization : null;
+    if (auth && auth.toLowerCase().startsWith("bearer ")) {
+      const decodedToken = jwt.verify(auth.substring(7), JWT_SECRET);
+      const currentUser = await User.findById(decodedToken.id);
+      return { currentUser };
+    }
+  },
 });
 
 server.listen().then(({ url }) => {
