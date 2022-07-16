@@ -6,6 +6,7 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
 import Recommendations from "./components/Recommendations";
+import BooksFetchGenre from "./components/BooksFetchGenre";
 
 const App = () => {
   const [page, setPage] = useState("authors");
@@ -37,7 +38,8 @@ const App = () => {
       </div>
 
       <Authors show={page === "authors"} />
-      <Books show={page === "books"} />
+      {/* <Books show={page === "books"} /> */}
+      <BooksFetchGenre show={page === "books"} />
       <NewBook show={page === "add"} />
       <LoginForm
         show={page === "login"}

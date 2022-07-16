@@ -7,8 +7,7 @@ const Recommendations = (props) => {
   const resBooks = useQuery(ALL_BOOKS);
   const resMe = useQuery(ME);
 
-  if (!props.show || resMe.loading || resBooks.loading)
-    return <h2>Recommendations</h2>;
+  if (!props.show || resMe.loading || resBooks.loading) return null;
 
   const favouriteGenre = resMe.data.me.favouriteGenre;
   const books = resBooks.data.allBooks;
