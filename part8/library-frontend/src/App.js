@@ -17,7 +17,6 @@ export const updateCache = (cache, query, addedBook) => {
     });
   };
 
-  console.log("cache", cache);
   cache.updateQuery(query, (data) => {
     if (!data) return undefined;
     const { allBooks } = data;
