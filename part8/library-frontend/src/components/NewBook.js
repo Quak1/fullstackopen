@@ -28,7 +28,7 @@ const NewBook = (props) => {
     event.preventDefault();
 
     console.log("add book...");
-    const res = await addBook({
+    await addBook({
       variables: { title, author, published: Number(published), genres },
     });
 
