@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useQuery } from "@apollo/client";
+import { useQuery, useSubscription } from "@apollo/client";
 
-import { GENRES, BOOKS_BY_GENRE } from "../queries";
+import { GENRES, BOOKS_BY_GENRE, BOOK_ADDED } from "../queries";
 import BooksTable from "./BooksTable";
 
 const Books = (props) => {
@@ -9,6 +9,13 @@ const Books = (props) => {
   const resGenres = useQuery(GENRES);
   const resByGenre = useQuery(BOOKS_BY_GENRE, {
     variables: { genre: genre === "all genres" ? null : genre },
+  });
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const book = subscriptionData.data.bookAdded;
+      window.alert(book.title);
+    },
   });
 
   if (!props.show || resGenres.loading) return null;
