@@ -8,6 +8,23 @@ interface Result {
   average: number;
 }
 
+const parseArguments = (args: Array<string>) => {
+  if (args.length < 4) throw new Error("Not enough arguments");
+
+  const target = Number(args[2]);
+  if (isNaN(target)) {
+    throw new Error("Target must be a number");
+  }
+
+  const training = args.slice(3).map((entry) => {
+    const hours = Number(entry);
+    if (isNaN(hours)) throw new Error("All arguments must be numbers");
+    return hours;
+  });
+
+  return { target, training };
+};
+
 const calculateExercises = (
   dailyExercise: Array<number>,
   target: number
@@ -51,4 +68,11 @@ const calculateExercises = (
   };
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+try {
+  const { target, training } = parseArguments(process.argv);
+  console.log(calculateExercises(training, target));
+} catch (error) {
+  console.log("Error:", error.message);
+}
+
+export {};
