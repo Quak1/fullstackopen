@@ -72,7 +72,11 @@ try {
   const { target, training } = parseArguments(process.argv);
   console.log(calculateExercises(training, target));
 } catch (error) {
-  console.log("Error:", error.message);
+  let errorMessage = "Something went wrong.";
+  if (error instanceof Error) {
+    errorMessage += " Error: " + error.message;
+  }
+  console.log(errorMessage);
 }
 
 export {};
