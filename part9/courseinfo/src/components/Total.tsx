@@ -1,7 +1,7 @@
-import { Course as CourseType } from "../types";
+import { CoursePart } from "../types";
 
 interface Props {
-  courseParts: CourseType[];
+  courseParts: CoursePart[];
 }
 
 const Total = ({ courseParts }: Props) => {

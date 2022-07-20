@@ -28,9 +28,7 @@ const Part = ({ part }: Props) => {
           <p>
             <em>{part.description}</em>
           </p>
-          <p>
-            <em>{part.exerciseSubmissionLink}</em>
-          </p>
+          <p>submit to {part.exerciseSubmissionLink}</p>
         </div>
       );
     case "groupProject":
