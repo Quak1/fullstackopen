@@ -4,14 +4,16 @@ import patientData from "../../data/patients";
 import { Patient, NewPatientEntry } from "../types";
 
 const getAll = (): Omit<Patient, "ssn">[] => {
-  return patientData.map(({ id, name, dateOfBirth, gender, occupation }) => ({
-    id,
-    name,
-    dateOfBirth,
-    gender,
-    occupation,
-    entries: [],
-  }));
+  return patientData.map(
+    ({ id, name, dateOfBirth, gender, occupation, entries }) => ({
+      id,
+      name,
+      dateOfBirth,
+      gender,
+      occupation,
+      entries,
+    })
+  );
 };
 
 const addPatient = (entry: NewPatientEntry): Patient => {
