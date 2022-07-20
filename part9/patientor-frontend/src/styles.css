@@ -1,0 +1,10 @@
+.entry {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 2px solid;
+  border-radius: 10px;
+}
+
+.entry p {
+  margin: 0;
+}
