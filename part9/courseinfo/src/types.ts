@@ -27,7 +27,14 @@ interface CourseSubmissionPart extends CoursePartBaseOptionalDescription {
   exerciseSubmissionLink: string;
 }
 
+interface CourseSpecialPart extends CoursePartBase {
+  type: "special";
+  requirements: string[];
+  description: string;
+}
+
 export type CoursePart =
   | CourseNormalPart
   | CourseProjectPart
-  | CourseSubmissionPart;
+  | CourseSubmissionPart
+  | CourseSpecialPart;

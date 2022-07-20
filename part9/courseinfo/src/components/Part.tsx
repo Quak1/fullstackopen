@@ -27,7 +27,9 @@ const Part = ({ part }: Props) => {
           <p>
             <em>{part.description}</em>
           </p>
-          <em>{part.exerciseSubmissionLink}</em>
+          <p>
+            <em>{part.exerciseSubmissionLink}</em>
+          </p>
         </div>
       );
     case "groupProject":
@@ -36,7 +38,19 @@ const Part = ({ part }: Props) => {
           <strong>
             {part.name} {part.exerciseCount}
           </strong>
-          <p>project exercises {part.exerciseCount}</p>
+          <p>project exercises {part.groupProjectCount}</p>
+        </div>
+      );
+    case "special":
+      return (
+        <div>
+          <strong>
+            {part.name} {part.exerciseCount}
+          </strong>
+          <p>
+            <em>{part.description}</em>
+          </p>
+          <p>required skills: {part.requirements.join(", ")}</p>
         </div>
       );
     default:

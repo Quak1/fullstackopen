@@ -26,6 +26,13 @@ const courseParts: CoursePart[] = [
     exerciseSubmissionLink: "https://fake-exercise-submit.made-up-url.dev",
     type: "submission",
   },
+  {
+    name: "Backend development",
+    exerciseCount: 21,
+    description: "Typing the backend",
+    requirements: ["nodejs", "jest"],
+    type: "special",
+  },
 ];
 
 export default courseParts;
