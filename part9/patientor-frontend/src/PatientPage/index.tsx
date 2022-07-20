@@ -6,6 +6,8 @@ import { useStateValue, updatePatient } from "../state";
 import { apiBaseUrl } from "../constants";
 import { Patient } from "../types";
 
+import Entries from "./Entries";
+
 const PatientPage = () => {
   const { id } = useParams();
   const [{ patients }, dispatch] = useStateValue();
@@ -47,6 +49,7 @@ const PatientPage = () => {
       </Typography>
       <Typography variant="body1">ssn: {patient.ssn}</Typography>
       <Typography variant="body1">occupation: {patient.occupation}</Typography>
+      <Entries entries={patient.entries} />
     </Container>
   );
 };
