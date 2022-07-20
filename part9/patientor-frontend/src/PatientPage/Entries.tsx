@@ -1,10 +1,15 @@
 import { Entry } from "../types";
+import { useStateValue } from "../state";
 
 interface Props {
   entries: Entry[];
 }
 
 const Entries = ({ entries }: Props) => {
+  const [{ diagnoses }] = useStateValue();
+
+  if (Object.keys(diagnoses).length === 0) return null;
+
   return (
     <>
       <h3>Entries</h3>
@@ -15,7 +20,11 @@ const Entries = ({ entries }: Props) => {
           </p>
           <ul>
             {entry.diagnosisCodes &&
-              entry.diagnosisCodes.map((code) => <li key={code}>{code}</li>)}
+              entry.diagnosisCodes.map((code) => (
+                <li key={code}>
+                  {code} {diagnoses[code].name}
+                </li>
+              ))}
           </ul>
         </div>
       ))}
