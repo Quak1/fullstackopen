@@ -1,32 +1,16 @@
-import { Entry } from "../types";
-import { useStateValue } from "../state";
+import { Entry as EntryType } from "../types";
+import Entry from "./Entry";
 
 interface Props {
-  entries: Entry[];
+  entries: EntryType[];
 }
 
 const Entries = ({ entries }: Props) => {
-  const [{ diagnoses }] = useStateValue();
-
-  if (Object.keys(diagnoses).length === 0) return null;
-
   return (
     <>
       <h3>Entries</h3>
       {entries.map((entry) => (
-        <div key={entry.id}>
-          <p>
-            {entry.date} <em>{entry.description}</em>
-          </p>
-          <ul>
-            {entry.diagnosisCodes &&
-              entry.diagnosisCodes.map((code) => (
-                <li key={code}>
-                  {code} {diagnoses[code].name}
-                </li>
-              ))}
-          </ul>
-        </div>
+        <Entry key={entry.id} entry={entry}></Entry>
       ))}
     </>
   );
