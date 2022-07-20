@@ -1,6 +1,6 @@
 import { Course as CourseType } from "../types";
 
-const Course = ({ name, exerciseCount }: CourseType) => {
+const Part = ({ name, exerciseCount }: CourseType) => {
   return (
     <p>
       {name} {exerciseCount}
@@ -8,4 +8,4 @@ const Course = ({ name, exerciseCount }: CourseType) => {
   );
 };
 
-export default Course;
+export default Part;

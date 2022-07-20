@@ -1,4 +1,4 @@
-import Course from "./Course";
+import Part from "./Part";
 import { Course as CourseType } from "../types";
 
 interface Props {
@@ -9,7 +9,7 @@ const Content = (props: Props) => {
   return (
     <>
       {props.courseParts.map((course) => (
-        <Course
+        <Part
           name={course.name}
           exerciseCount={course.exerciseCount}
           key={course.name}
