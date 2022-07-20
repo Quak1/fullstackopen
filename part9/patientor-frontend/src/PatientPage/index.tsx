@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Typography, Container } from "@material-ui/core";
 
-import { useStateValue } from "../state";
+import { useStateValue, updatePatient } from "../state";
 import { apiBaseUrl } from "../constants";
 import { Patient } from "../types";
 
@@ -15,7 +15,7 @@ const PatientPage = () => {
       const { data: patient } = await axios.get<Patient>(
         `${apiBaseUrl}/patients/${id}`
       );
-      dispatch({ type: "ADD_PATIENT", payload: patient });
+      dispatch(updatePatient(patient));
     } catch (e) {
       return <p>Not Found</p>;
     }
