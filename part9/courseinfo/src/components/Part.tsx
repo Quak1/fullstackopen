@@ -1,5 +1,6 @@
 import { CoursePart } from "../types";
 import { assertNever } from "../utils";
+import "../styles.css";
 
 interface Props {
   part: CoursePart;
