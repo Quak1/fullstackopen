@@ -10,6 +10,7 @@ const getAll = (): Omit<Patient, "ssn">[] => {
     dateOfBirth,
     gender,
     occupation,
+    entries: [],
   }));
 };
 
@@ -23,7 +24,12 @@ const addPatient = (entry: NewPatientEntry): Patient => {
   return newPatient;
 };
 
+const getById = (id: string) => {
+  return patientData.find((patient) => patient.id === id);
+};
+
 export default {
   getAll,
   addPatient,
+  getById,
 };
