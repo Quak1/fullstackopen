@@ -18,7 +18,7 @@ interface BaseEntry {
   diagnosisCodes?: string[];
 }
 
-interface HospitalEntry extends BaseEntry {
+export interface HospitalEntry extends BaseEntry {
   type: "Hospital";
   discharge: {
     date: string;
