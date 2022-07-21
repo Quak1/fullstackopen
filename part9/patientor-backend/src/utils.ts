@@ -59,61 +59,42 @@ const isGender = (gender: any): gender is Gender => {
   return Object.values(Gender).includes(gender as Gender);
 };
 
-type Fields = {
-  description: unknown;
-  date: unknown;
-  specialist: unknown;
-  diagnosisCodes: unknown;
-  type: unknown;
-  discharge: unknown;
-  employerName: unknown;
-  sickLeave: unknown;
-  healthCheckRating: unknown;
-};
-
-export const toNewEntry = ({
-  description,
-  date,
-  specialist,
-  diagnosisCodes,
-  type,
-  discharge,
-  employerName,
-  sickLeave,
-  healthCheckRating,
-}: Fields): NewEntry => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const toNewEntry = (obj: any): NewEntry => {
   const newDiagnosisEntry: Omit<BaseEntry, "id"> = {
-    description: parseString(description, "description"),
-    date: parseDate(date),
-    specialist: parseString(specialist, "specialist"),
+    description: parseString(obj.description, "description"),
+    date: parseDate(obj.date),
+    specialist: parseString(obj.specialist, "specialist"),
   };
 
-  if (diagnosisCodes) {
-    newDiagnosisEntry["diagnosisCodes"] = parseDiagnosisCodes(diagnosisCodes);
+  if (obj.diagnosisCodes) {
+    newDiagnosisEntry["diagnosisCodes"] = parseDiagnosisCodes(
+      obj.diagnosisCodes
+    );
   }
 
-  switch (type) {
+  switch (obj.type) {
     case "Hospital":
       return {
         ...newDiagnosisEntry,
         type: "Hospital",
-        discharge: parseDischarge(discharge),
+        discharge: parseDischarge(obj.discharge),
       };
     case "OccupationalHealthcare":
       const entry: Omit<OccupationalHealthcareEntry, "id"> = {
         ...newDiagnosisEntry,
         type: "OccupationalHealthcare",
-        employerName: parseString(employerName, "employerName"),
+        employerName: parseString(obj.employerName, "employerName"),
       };
-      if (sickLeave)
-        entry["sickLeave"] = parse(sickLeave, isSickLeave, "sick leave");
+      if (obj.sickLeave)
+        entry["sickLeave"] = parse(obj.sickLeave, isSickLeave, "sick leave");
       return entry;
     case "HealthCheck":
       return {
         ...newDiagnosisEntry,
         type: "HealthCheck",
         healthCheckRating: parse(
-          healthCheckRating,
+          obj.healthCheckRating,
           isHealthCheckRating,
           "health check rating"
         ),
@@ -127,7 +108,9 @@ const parseDiagnosisCodes = (codes: unknown): string[] => {
   if (!codes || !Array.isArray(codes)) {
     throw new Error(errorMessage + "diagnosis codes");
   }
-  const diagnosisCodes = codes.map((code) => parseString(code, `code ${code}`));
+  const diagnosisCodes = codes.map((code) =>
+    parseString(code, `diagnosis codes ${code}`)
+  );
   return diagnosisCodes;
 };
 

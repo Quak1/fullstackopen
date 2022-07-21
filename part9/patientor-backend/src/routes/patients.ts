@@ -1,7 +1,7 @@
 import express from "express";
 
 import patientsService from "../services/patients";
-import { toNewPatientEntry } from "../utils";
+import { toNewPatientEntry, toNewEntry } from "../utils";
 
 const router = express.Router();
 
@@ -15,6 +15,21 @@ router.post("/", (req, res) => {
     const newPatientEntry = toNewPatientEntry(req.body);
     const newPatient = patientsService.addPatient(newPatientEntry);
     res.json(newPatient);
+  } catch (e) {
+    let errorMessage = "";
+    if (e instanceof Error) {
+      errorMessage += e.message;
+    }
+    res.status(400).send({ error: errorMessage });
+  }
+});
+
+router.post("/:id/entries", (req, res) => {
+  try {
+    const { id } = req.params;
+    const newEntry = toNewEntry(req.body);
+    const savedEntry = patientsService.addEntry(id, newEntry);
+    res.json(savedEntry);
   } catch (e) {
     let errorMessage = "";
     if (e instanceof Error) {
