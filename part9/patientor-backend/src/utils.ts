@@ -123,6 +123,7 @@ const isDischarge = (obj: unknown): obj is Discharge => {
     isRecord(obj) &&
     "date" in obj &&
     isString(obj.date) &&
+    isValidDate(obj.date) &&
     "criteria" in obj &&
     isString(obj.criteria)
   );
