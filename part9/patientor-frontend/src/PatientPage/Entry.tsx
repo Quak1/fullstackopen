@@ -38,7 +38,7 @@ const Entry = ({ entry }: Props) => {
     </>
   );
 
-  const color = ["green", "yellow", "red", "black"];
+  const color = ["never", "green", "yellow", "red", "black"];
 
   switch (entry.type) {
     case "Hospital":

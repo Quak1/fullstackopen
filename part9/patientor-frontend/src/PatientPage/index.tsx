@@ -73,8 +73,6 @@ const PatientPage = () => {
         setError("Unknown error");
       }
     }
-
-    console.log("Submitting", values);
   };
 
   return (
