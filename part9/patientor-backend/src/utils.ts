@@ -4,6 +4,9 @@ import {
   NewEntry,
   BaseEntry,
   Discharge,
+  sickLeave,
+  HealthCheckRating,
+  OccupationalHealthcareEntry,
 } from "./types";
 
 const errorMessage = "Incorrect or missing field: ";
@@ -96,6 +99,25 @@ export const toNewEntry = ({
         type: "Hospital",
         discharge: parseDischarge(discharge),
       };
+    case "OccupationalHealthcare":
+      const entry: Omit<OccupationalHealthcareEntry, "id"> = {
+        ...newDiagnosisEntry,
+        type: "OccupationalHealthcare",
+        employerName: parseString(employerName, "employerName"),
+      };
+      if (sickLeave)
+        entry["sickLeave"] = parse(sickLeave, isSickLeave, "sick leave");
+      return entry;
+    case "HealthCheck":
+      return {
+        ...newDiagnosisEntry,
+        type: "HealthCheck",
+        healthCheckRating: parse(
+          healthCheckRating,
+          isHealthCheckRating,
+          "health check rating"
+        ),
+      };
     default:
       throw new Error(errorMessage + "type");
   }
@@ -118,6 +140,7 @@ const isDischarge = (obj: unknown): obj is Discharge => {
     isRecord(obj) &&
     "date" in obj &&
     isString(obj.date) &&
+    "criteria" in obj &&
     isString(obj.criteria)
   );
 };
@@ -125,6 +148,38 @@ const isDischarge = (obj: unknown): obj is Discharge => {
 const parseDischarge = (obj: unknown) => {
   if (!obj || !isDischarge(obj)) {
     throw new Error(errorMessage + "discharge");
+  }
+  return obj;
+};
+
+const isSickLeave = (obj: unknown): obj is sickLeave => {
+  return (
+    !!obj &&
+    isRecord(obj) &&
+    "startDate" in obj &&
+    isString(obj.startDate) &&
+    isValidDate(obj.startDate) &&
+    "endDate" in obj &&
+    isString(obj.endDate) &&
+    isValidDate(obj.endDate)
+  );
+};
+
+const isHealthCheckRating = (obj: unknown): obj is HealthCheckRating => {
+  return (
+    !!obj &&
+    typeof obj === "number" &&
+    Object.values(HealthCheckRating).includes(obj)
+  );
+};
+
+const parse = <T>(
+  obj: unknown,
+  isCheck: (obj: unknown) => obj is T,
+  typeMessage: string
+) => {
+  if (!obj || !isCheck(obj)) {
+    throw new Error(errorMessage + typeMessage);
   }
   return obj;
 };
