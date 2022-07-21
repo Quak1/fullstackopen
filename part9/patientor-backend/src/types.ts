@@ -4,7 +4,7 @@ export interface Diagnose {
   latin?: string;
 }
 
-interface BaseEntry {
+export interface BaseEntry {
   id: string;
   description: string;
   date: string;
@@ -12,21 +12,25 @@ interface BaseEntry {
   diagnosisCodes?: string[];
 }
 
+export interface Discharge {
+  date: string;
+  criteria: string;
+}
+
 interface HospitalEntry extends BaseEntry {
   type: "Hospital";
-  discharge: {
-    date: string;
-    criteria: string;
-  };
+  discharge: Discharge;
+}
+
+export interface sickLeave {
+  startDate: string;
+  endDate: string;
 }
 
 interface OccupationalHealthcareEntry extends BaseEntry {
   type: "OccupationalHealthcare";
   employerName: string;
-  sickLeave?: {
-    startDate: string;
-    endDate: string;
-  };
+  sickLeave?: sickLeave;
 }
 
 export enum HealthCheckRating {
@@ -64,3 +68,8 @@ export enum Gender {
 
 export type NewPatientEntry = Omit<Patient, "id">;
 export type PublicPatient = Omit<Patient, "ssn" | "entries">;
+
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown
+  ? Omit<T, K>
+  : never;
+export type NewEntry = UnionOmit<Entry, "id">;

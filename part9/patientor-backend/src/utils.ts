@@ -1,4 +1,10 @@
-import { NewPatientEntry, Gender } from "./types";
+import {
+  NewPatientEntry,
+  Gender,
+  NewEntry,
+  BaseEntry,
+  Discharge,
+} from "./types";
 
 const errorMessage = "Incorrect or missing field: ";
 
@@ -6,7 +12,7 @@ const errorMessage = "Incorrect or missing field: ";
 export const toNewPatientEntry = (object: any) => {
   const newPatient: NewPatientEntry = {
     name: parseString(object.name, "name"),
-    dateOfBirth: parseDateOfBirth(object.dateOfBirth),
+    dateOfBirth: parseDate(object.dateOfBirth),
     ssn: parseString(object.ssn, "ssn"),
     gender: parseGender(object.gender),
     occupation: parseString(object.occupation, "occupation"),
@@ -23,7 +29,7 @@ const parseString = (text: unknown, field: string): string => {
   return text;
 };
 
-const parseDateOfBirth = (date: unknown): string => {
+const parseDate = (date: unknown): string => {
   if (!date || !isString(date) || !isValidDate(date)) {
     throw new Error(errorMessage + "date");
   }
@@ -48,4 +54,77 @@ const isValidDate = (date: string): boolean => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isGender = (gender: any): gender is Gender => {
   return Object.values(Gender).includes(gender as Gender);
+};
+
+type Fields = {
+  description: unknown;
+  date: unknown;
+  specialist: unknown;
+  diagnosisCodes: unknown;
+  type: unknown;
+  discharge: unknown;
+  employerName: unknown;
+  sickLeave: unknown;
+  healthCheckRating: unknown;
+};
+
+export const toNewEntry = ({
+  description,
+  date,
+  specialist,
+  diagnosisCodes,
+  type,
+  discharge,
+  employerName,
+  sickLeave,
+  healthCheckRating,
+}: Fields): NewEntry => {
+  const newDiagnosisEntry: Omit<BaseEntry, "id"> = {
+    description: parseString(description, "description"),
+    date: parseDate(date),
+    specialist: parseString(specialist, "specialist"),
+  };
+
+  if (diagnosisCodes) {
+    newDiagnosisEntry["diagnosisCodes"] = parseDiagnosisCodes(diagnosisCodes);
+  }
+
+  switch (type) {
+    case "Hospital":
+      return {
+        ...newDiagnosisEntry,
+        type: "Hospital",
+        discharge: parseDischarge(discharge),
+      };
+    default:
+      throw new Error(errorMessage + "type");
+  }
+};
+
+const parseDiagnosisCodes = (codes: unknown): string[] => {
+  if (!codes || !Array.isArray(codes)) {
+    throw new Error(errorMessage + "diagnosis codes");
+  }
+  const diagnosisCodes = codes.map((code) => parseString(code, `code ${code}`));
+  return diagnosisCodes;
+};
+
+const isRecord = (obj: unknown): obj is Record<string, unknown> =>
+  typeof obj === "object";
+
+const isDischarge = (obj: unknown): obj is Discharge => {
+  return (
+    !!obj &&
+    isRecord(obj) &&
+    "date" in obj &&
+    isString(obj.date) &&
+    isString(obj.criteria)
+  );
+};
+
+const parseDischarge = (obj: unknown) => {
+  if (!obj || !isDischarge(obj)) {
+    throw new Error(errorMessage + "discharge");
+  }
+  return obj;
 };
